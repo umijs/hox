@@ -8,14 +8,9 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react",
-    "lib": ["es6"],
+    "lib": ["es6", "dom"],
     "outDir": "./lib"
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "**/__tests__",
-    "node_modules"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["**/__tests__", "node_modules"]
 }

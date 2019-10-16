@@ -17,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern \"src/**/*.(ts|tsx|js|jsx)\""
+      "pre-commit": "pretty-quick --staged"
     }
   },
   "devDependencies": {
