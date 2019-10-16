@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provider initialize 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    0
+  </div>
+</DocumentFragment>
+`;
+
+exports[`provider initialize 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    1
+  </div>
+</DocumentFragment>
+`;

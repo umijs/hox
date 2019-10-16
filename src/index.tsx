@@ -55,7 +55,7 @@ export function setModel<T>(key: string, model: ModelHook<T>) {
 
 type Deps<T> = (model: T) => unknown[];
 
-export function useModel<T = unknown>(key: string, depsFn?: Deps<T>) {
+export function useModel<T = any>(key: string, depsFn?: Deps<T>) {
   useDebugValue(key);
   const container = modelMap.get(key) as Container<T>;
   const [state, setState] = useState<T | undefined>(() =>
