@@ -1,0 +1,47 @@
+{
+  "name": "hox",
+  "version": "0.0.0",
+  "main": "index.js",
+  "description": "React store with hooks.",
+  "license": "MIT",
+  "private": false,
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "test": "jest",
+    "lint": "tslint -p tsconfig.json",
+    "umd": "rollup --config rollup.config.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --pattern \"src/**/*.(ts|tsx|js|jsx)\""
+    }
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.7",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^10.12.24",
+    "@types/react": "^16.8.0",
+    "@types/react-dom": "^16.8.0",
+    "@types/react-test-renderer": "^16.8.0",
+    "del": "^5.0.0",
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "husky": "^3.0.9",
+    "jest": "^24.1.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^2.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-test-renderer": "^16.8.0",
+    "rollup": "^1.21.4",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {}
+}
