@@ -13,8 +13,8 @@ test("provider initialize", function() {
 
   setModel("counter", useCounter);
 
-  const App: FC = props => {
-    const counter = useModel("counter");
+  const App: FC = () => {
+    const counter = useModel<typeof useCounter>("counter");
 
     return (
       <div>

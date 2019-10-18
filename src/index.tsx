@@ -9,7 +9,7 @@ import React, {
   ReactElement
 } from "react";
 
-type ModelHook<T> = () => T;
+type ModelHook<T = any> = () => T;
 
 const modelMap = new Map<string, Container<any>>();
 
@@ -53,20 +53,24 @@ export function setModel<T>(key: string, model: ModelHook<T>) {
   );
 }
 
-type Deps<T> = (model: T) => unknown[];
+type Deps<T extends ModelHook> = (model: ReturnType<T>) => unknown[];
 
-export function useModel<T = any>(key: string, depsFn?: Deps<T>) {
+export function useModel<T extends ModelHook = any>(
+  key: string,
+  depsFn?: Deps<T>
+) {
+  type V = ReturnType<T>;
   useDebugValue(key);
-  const container = modelMap.get(key) as Container<T>;
-  const [state, setState] = useState<T | undefined>(() =>
-    container ? (container.data as T) : undefined
+  const container = modelMap.get(key) as Container<V>;
+  const [state, setState] = useState<V | undefined>(() =>
+    container ? (container.data as V) : undefined
   );
-  const depsFnRef = useRef<Deps<T>>();
+  const depsFnRef = useRef<Deps<V>>();
   depsFnRef.current = depsFn;
   const depsRef = useRef<unknown[]>([]);
   useEffect(() => {
     if (!container) return;
-    function subscriber(val: T) {
+    function subscriber(val: V) {
       if (!depsFnRef.current) {
         setState(val);
       } else {
@@ -86,9 +90,10 @@ export function useModel<T = any>(key: string, depsFn?: Deps<T>) {
   return state!;
 }
 
-export function selectModel<T = unknown>(key: string) {
-  const container = modelMap.get(key) as Container<T>;
-  return container ? (container.data as T) : undefined;
+export function selectModel<T extends ModelHook = any>(key: string) {
+  type V = ReturnType<T>;
+  const container = modelMap.get(key) as Container<V>;
+  return container ? (container.data as V) : undefined;
 }
 
 export interface WithModelProps {
@@ -97,13 +102,13 @@ export interface WithModelProps {
   };
 }
 
-export function withModel<T = unknown>(key: string) {
+export function withModel<T extends ModelHook = any>(key: string) {
   return function<P extends WithModelProps>(C: ComponentType<P>) {
     const Wrapper: FC<Omit<P, "model">> = function(props) {
       const componentProps: P = ({
         ...props,
         model: {
-          [key]: useModel(key)
+          [key]: useModel<T>(key)
         }
       } as unknown) as P;
       return <C {...componentProps} />;
