@@ -65,17 +65,15 @@ export function useModel<T extends ModelHook = any>(
   const [state, setState] = useState<V | undefined>(() =>
     container ? (container.data as V) : undefined
   );
-  const depsFnRef = useRef<Deps<V>>();
-  depsFnRef.current = depsFn;
   const depsRef = useRef<unknown[]>([]);
   useEffect(() => {
     if (!container) return;
     function subscriber(val: V) {
-      if (!depsFnRef.current) {
+      if (!depsFn) {
         setState(val);
       } else {
         const oldDeps = depsRef.current;
-        const newDeps = depsFnRef.current(val);
+        const newDeps = depsFn(val);
         if (compare(oldDeps, newDeps)) {
           setState(val);
         }
@@ -102,6 +100,10 @@ export interface WithModelProps {
   };
 }
 
+// TODO 支持多个 model
+// 1. 可以支持数组 和 字符串
+// TODO 支持重命名 model，this.props.model 如果本来组件就有这个名字了，就有问题了，需要支持重命名。
+// 1. 支持接收函数，函数的参数为所有的 model 数据，类似 react-redux {[key]: modelMap[key].data}
 export function withModel<T extends ModelHook = any>(key: string) {
   return function<P extends WithModelProps>(C: ComponentType<P>) {
     const Wrapper: FC<Omit<P, "model">> = function(props) {
