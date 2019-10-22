@@ -42,7 +42,7 @@ export type InferableComponentEnhancerWithProps<TInjectedProps, TNeedsProps> = <
 
 export interface WithModelProps {
   model: {
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 
@@ -52,16 +52,22 @@ type MapModelToProps<TModelProps, TOwnProps, Model> = (
 ) => TModelProps;
 
 export function withModel<TModelProps, TOwnProps, Model>(
+  key: string
+): InferableComponentEnhancerWithProps<WithModelProps, TOwnProps>;
+export function withModel<TModelProps, TOwnProps, Model>(
   key: string,
-  mapModelToProps?: MapModelToProps<TModelProps, TOwnProps, Model>
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, Model>
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps, Model>(
+  keys: string[]
+): InferableComponentEnhancerWithProps<WithModelProps, TOwnProps>;
+export function withModel<TModelProps, TOwnProps, Model>(
   keys: string[],
-  mapModelToProps?: MapModelToProps<TModelProps, TOwnProps, Model>
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, Model>
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps, Model>(
   keyOrKeys: string | string[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, Model>
+  mapModelToProps?: MapModelToProps<TModelProps, TOwnProps, Model>
 ) {
   return function(C) {
     const Wrapper: FC<any> = function(props) {

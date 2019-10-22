@@ -43,3 +43,25 @@ exports[`withModel 2`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`withModel without mapModelToProps 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    0
+  </div>
+</DocumentFragment>
+`;
+
+exports[`withModel without mapModelToProps 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    1
+  </div>
+</DocumentFragment>
+`;

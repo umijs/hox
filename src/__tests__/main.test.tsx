@@ -64,3 +64,39 @@ test("withModel", function() {
   testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
   expect(renderer.asFragment()).toMatchSnapshot();
 });
+
+test("withModel without mapModelToProps", function() {
+  function useCounter() {
+    const [count, setCount] = useState(0);
+    const decrement = () => setCount(count - 1);
+    const increment = () => setCount(count + 1);
+    return { count, decrement, increment };
+  }
+
+  setModel("counter", useCounter);
+
+  interface Props {
+    model: {
+      counter: ReturnType<typeof useCounter>;
+    };
+  }
+
+  class App extends Component<Props> {
+    render() {
+      return (
+        <div>
+          <button onClick={this.props.model.counter.increment}>Change</button>
+          {this.props.model.counter.count}
+        </div>
+      );
+    }
+  }
+
+  type Counter = ReturnType<typeof useCounter>;
+
+  const AppWithModel = withModel("counter")(App);
+  const renderer = testing.render(<AppWithModel />);
+  expect(renderer.asFragment()).toMatchSnapshot();
+  testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
+  expect(renderer.asFragment()).toMatchSnapshot();
+});
