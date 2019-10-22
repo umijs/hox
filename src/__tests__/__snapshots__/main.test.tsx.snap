@@ -21,3 +21,25 @@ exports[`provider initialize 2`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`withModel 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    0
+  </div>
+</DocumentFragment>
+`;
+
+exports[`withModel 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    1
+  </div>
+</DocumentFragment>
+`;
