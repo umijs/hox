@@ -3,7 +3,7 @@ import * as React from "react";
 import { Component, FC, memo, useState } from "react";
 import * as testing from "@testing-library/react";
 
-test("provider initialize", function() {
+test("simple", function() {
   function useCounter() {
     const [count, setCount] = useState(0);
     const decrement = () => setCount(count - 1);
