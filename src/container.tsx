@@ -8,7 +8,6 @@ export class Container<T = unknown> {
   data!: T;
 
   notify() {
-    console.log(this.hook.name, this.data);
     for (const subscriber of this.subscribers) {
       subscriber(this.data);
     }
