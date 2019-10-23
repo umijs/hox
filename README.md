@@ -8,9 +8,13 @@
 
 ## 特性
 
-- 支持全部的 React hooks，一个 custom hook 就是一个 model
-- 可定义多个 model，随用随取
+- 支持全部的 React hooks，使用 custom hook 来定义 model
+- 支持多数据源，随用随取
 - 简单高效，几乎无需学习成本
+
+## 在线体验
+
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/awmleer/todo-app-with-hox?fontsize=14)
 
 ## 安装
 
