@@ -131,6 +131,11 @@ const counter = useModel("counter", model => [model.count, model.x.y]);
 
 此外，我们建议对一个庞大的 model 进行拆分，这样不仅代码更易于维护，性能也会有所改善。
 
+## 最佳实践
+
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hox-example-tct70)
+
+
 ## API
 
 ### setModel
