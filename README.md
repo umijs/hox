@@ -14,7 +14,7 @@
 
 ## 在线体验
 
-[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/awmleer/todo-app-with-hox?fontsize=14)
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/todo-app-with-hox-2gvgg)
 
 ## 安装
 
@@ -133,7 +133,7 @@ const counter = useModel("counter", model => [model.count, model.x.y]);
 
 ## 最佳实践
 
-[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hox-example-tct70)
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hox-best-practice-fszmp)
 
 
 ## API
