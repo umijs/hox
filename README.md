@@ -1,14 +1,14 @@
 # hox
 
+> 下一代 React 状态管理器
+
 [![npm version](https://img.shields.io/npm/v/hox.svg?logo=npm)](https://www.npmjs.com/package/hox)
 [![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/hox.svg?logo=javascript)](https://www.npmjs.com/package/hox)
 ![React](https://img.shields.io/npm/dependency-version/hox/peer/react?logo=react)
 
-使用 hooks 构建 React 应用的模型层。
-
 ## 特性
 
-- 支持全部的 React hooks，使用 custom hook 来定义 model
+- 使用 custom Hooks 来定义 model
 - 支持多数据源，随用随取
 - 简单高效，几乎无需学习成本
 
@@ -28,7 +28,7 @@ npm install --save hox
 
 ### 定义 model
 
-在 hox 中，model 本质上就是 custom hook：
+在 hox 中，model 就是 custom Hook：
 
 ```jsx
 function useCounter() {
@@ -54,7 +54,7 @@ import { useCounter } from "./model";
 setModel("counter", useCounter); // 将 useCounter 注册到 'counter' 命名空间下
 ```
 
-> hox 会为每一个命名空间创建一个容器组件的实例，并在其中执行对应的 custom hook
+> hox 会为每一个命名空间创建一个容器组件的实例，并在其中执行对应的 custom Hook
 
 ### 获取 model
 
@@ -102,7 +102,7 @@ export function useCounterDouble() {
 
 ### 在类组件中使用
 
-虽然 model 是使用的 hooks 语法，但你仍然可以在类组件中获取和订阅 model ：
+虽然 model 是使用的 Hooks 语法，但你仍然可以在类组件中获取和订阅 model ：
 
 ```jsx
 class App extends Component {
@@ -127,7 +127,7 @@ export default withModel("counter")(App);
 const counter = useModel("counter", model => [model.count, model.x.y]);
 ```
 
-这和 `useMemo` 、 `useEffect` 的 `deps` 非常相似，但是， `useStore` 的 `deps` 参数是一个**函数**。
+这和 `useMemo` 、 `useEffect` 的 `deps` 非常相似，但是， `useModel` 的 `deps` 参数是一个**函数**。
 
 此外，我们建议对一个庞大的 model 进行拆分，这样不仅代码更易于维护，性能也会有所改善。
 
@@ -141,7 +141,7 @@ function setModel<T>(key: string, model: ModelHook<T>): void;
 
 注册一个 model 。
 
-第一个参数为 model 的 `key` ，也可以理解为 namespace ，第二个参数是一个 custom hook ，用于定义 model 的内部逻辑。
+第一个参数为 model 的 `key` ，也可以理解为 namespace ，第二个参数是一个 custom Hook ，用于定义 model 的内部逻辑。
 
 可以多次调用，来创建多个 model ：
 
@@ -167,7 +167,7 @@ type Deps<T extends ModelHook> = (model: ReturnType<T>) => unknown[];
 
 第一个参数为 model 的 `key` 。第二个参数 `depsFn` 可以缺省，用于[性能优化](#性能优化)。
 
-> `useModel` 是一个 hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
+> `useModel` 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
 
 ### selectModel
 
@@ -176,6 +176,8 @@ function selectModel<T extends ModelHook = any>(key: string): ReturnType<T>;
 ```
 
 `selectModel` 和 `useModel` 非常类似，他们的区别在于 `selectModel` 只会获取 model 的值，但不会订阅更新。
+
+> `selectModel` 不是一个 React Hook ，你可以在任意地方使用它。
 
 ### withModel
 
