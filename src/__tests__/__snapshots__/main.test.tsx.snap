@@ -6,7 +6,12 @@ exports[`simple 1`] = `
     <button>
       Change
     </button>
-    0
+    <p>
+      0
+    </p>
+    <p>
+      0
+    </p>
   </div>
 </DocumentFragment>
 `;
@@ -17,7 +22,12 @@ exports[`simple 2`] = `
     <button>
       Change
     </button>
-    1
+    <p>
+      1
+    </p>
+    <p>
+      1
+    </p>
   </div>
 </DocumentFragment>
 `;
@@ -34,28 +44,6 @@ exports[`withModel 1`] = `
 `;
 
 exports[`withModel 2`] = `
-<DocumentFragment>
-  <div>
-    <button>
-      Change
-    </button>
-    1
-  </div>
-</DocumentFragment>
-`;
-
-exports[`withModel without mapModelToProps 1`] = `
-<DocumentFragment>
-  <div>
-    <button>
-      Change
-    </button>
-    0
-  </div>
-</DocumentFragment>
-`;
-
-exports[`withModel without mapModelToProps 2`] = `
 <DocumentFragment>
   <div>
     <button>

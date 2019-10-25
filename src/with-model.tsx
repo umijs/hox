@@ -1,6 +1,6 @@
 import React, { ComponentType, FC, NamedExoticComponent } from "react";
 import { NonReactStatics } from "hoist-non-react-statics";
-import { useModel } from "./index";
+import { UseModel } from "./types";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -40,50 +40,36 @@ export type InferableComponentEnhancerWithProps<TInjectedProps, TNeedsProps> = <
   Omit<GetProps<C>, keyof Shared<TInjectedProps, GetProps<C>>> & TNeedsProps
 >;
 
-export interface WithModelProps {
-  model: {
-    [key: string]: any;
-  };
-}
-
 type MapModelToProps<TModelProps, TOwnProps, Model> = (
   model: Model,
   ownProps: TOwnProps
 ) => TModelProps;
 
-export function withModel<TModelProps, TOwnProps, Model>(
-  key: string
-): InferableComponentEnhancerWithProps<WithModelProps, TOwnProps>;
-export function withModel<TModelProps, TOwnProps, Model>(
-  key: string,
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, Model>
+export function withModel<TModelProps, TOwnProps, T>(
+  useModel: UseModel<T>,
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps, Model>(
-  keys: string[]
-): InferableComponentEnhancerWithProps<WithModelProps, TOwnProps>;
-export function withModel<TModelProps, TOwnProps, Model>(
-  keys: string[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, Model>
+  useModels: UseModel<any>[],
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
-export function withModel<TModelProps, TOwnProps, Model>(
-  keyOrKeys: string | string[],
-  mapModelToProps?: MapModelToProps<TModelProps, TOwnProps, Model>
+export function withModel<TModelProps, TOwnProps>(
+  useModelOrUseModels: UseModel<any> | UseModel<any>[],
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any>
 ) {
   return function(C) {
     const Wrapper: FC<any> = function(props) {
-      const model: {
-        [key: string]: unknown;
-      } = {};
-      if (Array.isArray(keyOrKeys)) {
-        for (const key of keyOrKeys) {
-          model[key] = useModel(key);
+      let modelProps;
+      if (Array.isArray(useModelOrUseModels)) {
+        const models = [];
+        for (const useModel of useModelOrUseModels) {
+          models.push(useModel());
         }
+        modelProps = mapModelToProps(models, props);
       } else {
-        model[keyOrKeys] = useModel(keyOrKeys);
+        const model = useModelOrUseModels();
+        modelProps = mapModelToProps(model, props);
       }
-      const modelProps = mapModelToProps
-        ? mapModelToProps((model as unknown) as Model, props)
-        : { model };
       const componentProps = {
         ...props,
         ...modelProps

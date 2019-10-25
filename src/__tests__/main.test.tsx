@@ -1,4 +1,4 @@
-import { setModel, useModel, selectModel, withModel } from "..";
+import { createModel, withModel } from "..";
 import * as React from "react";
 import { Component, FC, memo, useState } from "react";
 import * as testing from "@testing-library/react";
@@ -11,15 +11,16 @@ test("simple", function() {
     return { count, decrement, increment };
   }
 
-  setModel("counter", useCounter);
+  const useCounterModel = createModel(useCounter);
 
   const App: FC = () => {
-    const counter = useModel<typeof useCounter>("counter");
+    const counter = useCounterModel();
 
     return (
       <div>
         <button onClick={counter.increment}>Change</button>
-        {counter.count}
+        <p>{counter.count}</p>
+        <p>{useCounterModel.data.count}</p>
       </div>
     );
   };
@@ -37,10 +38,11 @@ test("withModel", function() {
     return { count, decrement, increment };
   }
 
-  setModel("counter", useCounter);
+  const useCounterModel = createModel(useCounter);
+  type Counter = ReturnType<typeof useCounterModel>;
 
   interface Props {
-    counter: ReturnType<typeof useCounter>;
+    counter: Counter;
   }
 
   class App extends Component<Props> {
@@ -54,47 +56,9 @@ test("withModel", function() {
     }
   }
 
-  type Counter = ReturnType<typeof useCounter>;
-
-  const AppWithModel = withModel("counter", (model: { counter: Counter }) => ({
-    counter: model.counter
+  const AppWithModel = withModel(useCounterModel, (counter: Counter) => ({
+    counter
   }))(App);
-  const renderer = testing.render(<AppWithModel />);
-  expect(renderer.asFragment()).toMatchSnapshot();
-  testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
-
-test("withModel without mapModelToProps", function() {
-  function useCounter() {
-    const [count, setCount] = useState(0);
-    const decrement = () => setCount(count - 1);
-    const increment = () => setCount(count + 1);
-    return { count, decrement, increment };
-  }
-
-  setModel("counter", useCounter);
-
-  interface Props {
-    model: {
-      counter: ReturnType<typeof useCounter>;
-    };
-  }
-
-  class App extends Component<Props> {
-    render() {
-      return (
-        <div>
-          <button onClick={this.props.model.counter.increment}>Change</button>
-          {this.props.model.counter.count}
-        </div>
-      );
-    }
-  }
-
-  type Counter = ReturnType<typeof useCounter>;
-
-  const AppWithModel = withModel("counter")(App);
   const renderer = testing.render(<AppWithModel />);
   expect(renderer.asFragment()).toMatchSnapshot();
   testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
