@@ -8,9 +8,10 @@
 
 ## 特性
 
-- 使用 custom Hooks 来定义 model
+- 只有一个 API，简单高效，几乎无需学习成本
+- 使用 custom Hooks 来定义 model，完美拥抱 React Hooks
+- 完美的 TypeScript 支持
 - 支持多数据源，随用随取
-- 简单高效，几乎无需学习成本
 
 ## 在线体验
 
@@ -28,7 +29,7 @@ npm install --save hox
 
 ### 创建一个 model
 
-在 hox 中，你可以通过 custom Hook 来定义 model ，然后使用 `createModel` 把它变成一个全局共享的数据模型。
+在 hox 中，任意的 custom Hook，经过 `createModel` 包装后，就变成了持久化，且全局共享的数据。
 
 ```jsx
 import { createModel } from 'hox';
@@ -44,12 +45,12 @@ function useCounter() {
   };
 }
 
-export export const useCounterModel = createModel(useCounter)
+export const useCounterModel = createModel(useCounter)
 ```
 
-> 通过 `createModel` ， hox 会创建一个全局的容器组件，在其中执行对应的 custom Hook ，并返回一个用来获取数据的 Hook 。
+> 通过 `createModel` ， hox 会返回一个新的 custom Hook，返回值 useCounterModel 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
 
-### 获取 model
+### 使用 model
 
 还记得刚刚 `createModel` 返回的 `useCounterModel` 吗？在组件中调用这个 Hook ，就可以获取到 model 的数据了。
 
@@ -67,7 +68,7 @@ function App(props) {
 }
 ```
 
-同时， `useCounterModel` 还会订阅数据的更新，也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知 `App` 组件进行重渲染。
+ `useCounterModel` 是一个真正的 Hook，会订阅数据的更新。也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知所有使用 `useCounterModel` 的组件。
 
 ## 进阶用法
 
@@ -75,9 +76,9 @@ function App(props) {
 
 虽然你仍然可以按照传统的单一数据源的思想进行 model 的设计，但我们更推荐将 model 拆分成多个小部分，于是不可避免的，我们需要在多个 model 之间处理依赖关系，例如订单模块 `order` 依赖账户模块 `account` 。
 
-在 hox 中，处理模块之间的依赖其实非常简单且自然：
+在 hox 中，处理模块之间的依赖非常简单且自然：在一个 model 中可以直接使用 `useXXXModel` 来获取另一个 model，并订阅其更新，和在组件中使用并无两样。
 
-在一个 model 中可以直接使用 `useXXXModel` 来获取另一个 model， hox 会将其作为依赖，就像在组件中使用 `useXXXModel` 一样：
+> 提醒：小心循环依赖！
 
 ```jsx
 import { useCounterModel } from "./counter";
@@ -91,9 +92,31 @@ export function useCounterDouble() {
 }
 ```
 
-当依赖更新时，也会触发 model 的重渲染，并最终将更新传递到组件。
+### 只读不订阅更新
 
-> 提醒：小心循环依赖！
+在某些场景下，我们只希望读取当前 model 的值，而不希望订阅其更新。
+
+如下面的例子一样，我们可以通过 `useCounterModel.data` 来读取当前 model 中值，而不监听它的更新。
+
+> useCounter.model 不是一个 Hook，你可以在任何场景中使用它。
+
+```jsx
+import { useState } from 'React';
+import { useCounterModel } from "./counter";
+
+export function logger() {
+  const [log, setLog] = useState([]);
+  const logCount = ()=>{
+    const counter = useCounterModel.data;
+    setLog(log.concat(counter));
+  }
+  
+  return {
+    log,
+    logCount
+  };
+}
+```
 
 ### 在类组件中使用
 
@@ -101,19 +124,20 @@ export function useCounterDouble() {
 
 ```jsx
 class App extends Component {
+
   render() {
+    const counter = this.props.model.useCounterModel;
+    
     return (
       <div>
-        <p>{this.props.counter.count}</p>
-        <button onClick={this.props.counter.increment}>Increment</button>
+        <p>{counter.count}</p>
+        <button onClick={counter.increment}>Increment</button>
       </div>
     );
   }
 }
 
-export default withModel(useCounterModel, counter => ({
-  counter
-}))(App);
+export default withModel(useCounterModel)(App);
 ```
 
 ### 性能优化
@@ -154,7 +178,7 @@ const useTimerModel = createModel(useTimer);
 
 > 两次调用 `createModel(useCounter)` 会创建 model 的两个实例，彼此相互隔离。
 
-### useModel
+##### UseModel
 
 `UseModel` 是 `createModel` 的返回值类型。
 
@@ -194,8 +218,11 @@ type ModelMap = {
 示例：
 
 ```js
-// 订阅单个 model
-export default withModel(useCounterModel, (counter) => ({
+// 不使用第二个参数，counter 会挂载到 props.model.useCounterModel 上
+export default withModel(useCounterModel)(App)
+
+// 使用第二个参数, 会将自定义的返回值挂载到 props，比如 props.count
+export default withModel(useCounterModel, (counter)=>({
   count: counter.count
 }))(App)
 
