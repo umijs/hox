@@ -183,9 +183,9 @@ const useTimerModel = createModel(useTimer);
 
 > 两次调用 `createModel(useCounter)` 会创建 model 的两个实例，彼此相互隔离。
 
-##### UseModel
+**UseModel**
 
-`UseModel` 是 `createModel` 的返回值类型。
+`UseModel` 是 `createModel` 的返回值类型，它用来获取 model 并订阅其更新。
 
 ```typescript
 export interface UseModel<T> {
@@ -193,8 +193,6 @@ export interface UseModel<T> {
   data?: T;
 }
 ```
-
-获取 model 并订阅其更新。
 
 参数 `depsFn` 可以缺省，用于[性能优化](#性能优化)。
 

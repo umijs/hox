@@ -163,66 +163,72 @@ In addition, we recommend splitting a large model into small parts, so that not 
 
 ## API
 
-### setModel
+### createModel
 
 ```typescript
-function setModel<T>(key: string, model: ModelHook<T>): void;
+declare function createModel(hook: ModelHook): UseModel;
 ```
 
-Register a model.
+Create a model.
 
-The first parameter is the `key` of model (aka namespace) . And the second parameter is a custom Hook, used for defining the logic of model.
+The parameter is a custom Hook, used for defining the logic of model.
 
-You can call `setModel` multiple times to create multiple models:
+You can call it multiple times to create multiple models:
 
 ```jsx
-setModel("counter-a", useCounter);
-setModel("counter-b", useCounter);
-setModel("timer", useTimer);
+const useCounterModelA = createModel(useCounter);
+const useCounterModelB = createModel(useCounter);
+const useTimerModel = createModel(useTimer);
 ```
 
-> `key` is the unique identifier of model. So please make sure it is **unique**. Don't call `setModel` multiple times on the same `key`.
+> Calling `createModel(useCounter)` two times will create two instances which are isolated from each other.
 
-### useModel
+**useModel**
+
+`UseModel` is the return type of `createModel`. It is used for retrieving model and subscribing to its updates.
 
 ```typescript
-function useModel<T extends ModelHook = any>(
-  key: string,
-  depsFn?: Deps<T>
-): ReturnType<T>;
-type Deps<T extends ModelHook> = (model: ReturnType<T>) => unknown[];
+export interface UseModel<T> {
+  (depsFn?: (model: T) => unknown[]): T;
+  data?: T;
+}
 ```
 
-Retrieve one model and subscribe to its updates.
-
-The first parameter is the `key` of model. And the second is `depsFn` which can be omitted. It is used for [performance optimization](#performance-optimization).
+The parameter `depsFn` can be omitted. And it is used for [performance optimization](#performance-optimization).
 
 > `useModel` is a React Hook, so please follow React's [rules of hooks](https://reactjs.org/docs/hooks-rules.html).
 
-### selectModel
-
-```typescript
-function selectModel<T extends ModelHook = any>(key: string): ReturnType<T>;
-```
-
-`selectModel` is very similiar to `useModel`. The key difference is that `selectModel` only retrieves the value, but doesn't subscribe to its updates.
-
-> `selectModel` is not a React Hook, so you can use it anywhere.
+What's more, there is `data` field on `useModel`, which is used for read the current value of model. You'll find it quite useful when you try to just read value without subscribing to its updates, or try to use model in none-react environments.
 
 ### withModel
 
 ```typescript
-function withModel(
-  keyOrKeys: string | string[],
-  mapModelToProps?: (model: ModelMap, ownProps: object) => object;
-): (C: ComponentType) => ComponentType
+declare function withModel(
+  useModel,
+  mapModelToProps: (model, ownProps) => object
+): (C: ComponentType) => ComponentType;
 type ModelMap = {
-  [key: string]: unknown
-}
+  [key: string]: unknown;
+};
 ```
 
 `withModel` is the bridge between models and class components. If you have ever used react-redux's `connect` before, you'll find it very familiar.
 
-The first parameter `keyOrKeys` describes which models need to be obtained. You can just pass one `key`, or multiple keys in the form of array.
+The first parameter `useModel` describes which models need to be obtained. You can just pass one `useModel`, or multiple in the form of array.
 
-The second parameter `mapModelToProps` is used to define the mapping rule from model to component `props`. This parameter can be omitted and the default behavior is binding the `modelMap` to the `model` prop of the component.
+The second parameter `mapModelToProps` is used to define the mapping rule from model to component `props`.
+
+For example:
+
+```js
+// subscibe to a single model
+export default withModel(useCounterModel, (counter) => ({
+  count: counter.count
+}))(App)
+
+// subscribe to multiple models
+export default withModel([useCounterModel, useTimerModel], ([counter, timer]) => ({
+  count: counter.count,
+  timer,
+}))(App)
+```
