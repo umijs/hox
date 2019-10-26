@@ -96,9 +96,9 @@ export function useCounterDouble() {
 
 在某些场景下，我们只希望读取当前 model 的值，而不希望订阅其更新。
 
-如下面的例子一样，我们可以通过 `useCounterModel.data` 来读取当前 model 中值，而不监听它的更新。
+如下面的例子一样，我们可以通过 `useCounterModel.data` 来读取当前 model 中值，而不订阅它的更新。
 
-> useCounter.model 不是一个 Hook，你可以在任何场景中使用它。
+> useCounterModel.data 不是一个 Hook，你可以在任何场景中使用它。
 
 ```jsx
 import { useState } from 'React';
@@ -142,7 +142,7 @@ export default withModel(useCounterModel)(App);
 
 ### 性能优化
 
-`useModel` 支持传入一个 `depsFn` 函数，来控制是否进行组件的重渲染：
+`createMoldel` 的返回值 `useXxxModel` 支持传入一个 `depsFn` 函数，来精确控制订阅的字段：
 
 ```jsx
 const counter = useCounterModel(model => [model.count, model.x.y]);
@@ -211,7 +211,7 @@ type ModelMap = {
 
 `withModel` 用来在类组件中使用 model ，它的用法类似于 react-redux 中的 `connect` 。
 
-第一个参数 `useModel` 用来描述需要获取哪些 model ，可以只传入一个 `UseModel` ，也可以以数组的形式传入多个。
+第一个参数 `useModel` 用来描述需要获取哪些 model ，可以只传入一个 `useModel` ，也可以以数组的形式传入多个。
 
 第二个参数 `mapModelToProps` 用来定义 model 到组件 `props` 的映射规则。这个参数可以缺省，默认的行为是将 `modelMap` 绑到组件的 `model` 属性上。
 
