@@ -45,7 +45,7 @@ function useCounter() {
   };
 }
 
-export const useCounterModel = createModel(useCounter)
+export default createModel(useCounter)
 ```
 
 > 通过 `createModel` ， hox 会返回一个新的 custom Hook，返回值 useCounterModel 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
