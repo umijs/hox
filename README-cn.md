@@ -1,3 +1,4 @@
+[English](./README.md) | 简体中文
 # hox
 
 > 下一代 React 状态管理器
