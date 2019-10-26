@@ -1,4 +1,5 @@
 English | [简体中文](./README-cn.md)
+
 # hox
 
 > The next-generation state manager for React.
@@ -9,9 +10,10 @@ English | [简体中文](./README-cn.md)
 
 ## Features
 
-- Define model with custom Hooks
-- Supports multiple data sources
-- Simple and efficient. Almost no learning cost.
+- Only one API, simple and efficient. Almost no learning cost.
+- Define model with custom Hooks.
+- Perfect typescript support.
+- Supports multiple data sources.
 
 ## Try It Online
 
@@ -27,11 +29,15 @@ npm install --save hox
 
 ## Quick Start
 
-### Define model
+### Create a model
 
-In hox, a model is just a custom Hook:
+In hox, you can process a custom Hook with `createModel` to make it persistent and globally shared.
+
+> Attention: The custom Hook you pass to `createModel` can not have parameters.
 
 ```jsx
+import { createModel } from "hox";
+
 function useCounter() {
   const [count, setCount] = useState(0);
   const decrement = () => setCount(count - 1);
@@ -42,30 +48,21 @@ function useCounter() {
     increment
   };
 }
+
+export default createModel(useCounter);
 ```
 
-### Register model
+> By calling `createModel`, hox will return a new custom Hook, which is used for retrieving model data.
 
-You can register your model to a global namespace with `setModel` :
+## Use model
 
-```jsx
-import { setModel } from "hox";
-import { useCounter } from "./model";
-
-setModel("counter", useCounter); // register useCounter to the 'counter' namespace
-```
-
-> Hox will create a stand-alone container for each of the namespaces and execute the corresponding custom Hook in it.
-
-### Retrieve model
-
-With `useModel` , you can retrieve the model data of the given namespace, and subscribe to its updates at the same time:
+In order to retrieve the data of counter model, you need to import and call `useCounterModel` in your components.
 
 ```jsx
-import { useModel } from "hox";
+import useCounterModel from "../models/counter";
 
 function App(props) {
-  const counter = useModel("counter");
+  const counter = useCounterModel();
   return (
     <div>
       <p>{counter.count}</p>
@@ -75,7 +72,7 @@ function App(props) {
 }
 ```
 
-> If you don't want to subscribe to the updates, you can use `selectModel` .
+`useCounterModel` is a real Hook. By calling it, you can subscribe to the updates of data. So if you click the "Increment" button, the update of counter model will be triggered, and finally, hox will notify all components or Hooks using `useCounterModel`.
 
 ## Advanced Usages
 
@@ -83,13 +80,15 @@ function App(props) {
 
 Although you can still design your model according to the traditional single data source pattern, we recommend splitting the big model into small parts. Therefore inevitably, we need to handle dependencies between multiple models. For example, the `order` model depends on the `account` model.
 
-In hox, handling these depdencies is actually quite simple and straightforward:
+In hox, handling these depdencies is actually quite simple and straightforward: You can call `useXxxModel` to retrieve another model and subscribe its updates. Just like what you can do in components.
 
-In one model, you can just use `useModel` to retrieve another model. Hox will regard it as a denpendency, just like using `useModel` in normal React components:
+> Caution: Be careful with circular dependencies!
 
 ```jsx
+import { useCounterModel } from "./counter";
+
 export function useCounterDouble() {
-  const counter = useModel("counter");
+  const counter = useCounterModel();
   return {
     ...counter,
     count: counter.count * 2
@@ -97,9 +96,31 @@ export function useCounterDouble() {
 }
 ```
 
-When the dependency model updates, hox will trigger the rerendering of the dependent model. And finally, this update will spread to components.
+### Readonly
 
-> Caution: Be careful with circular dependencies!
+In some scenarios, we only want to read the current value of a model, without subscribing to its updates.
+
+Just like the example below, we can read the current value of counter model from `useCounterModel.data`.
+
+> `useCounterModel.data` is not Hook, you can use it anywhere.
+
+```jsx
+import { useState } from "React";
+import { useCounterModel } from "./counter";
+
+export function logger() {
+  const [log, setLog] = useState([]);
+  const logCount = () => {
+    const counter = useCounterModel.data;
+    setLog(log.concat(counter));
+  };
+
+  return {
+    log,
+    logCount
+  };
+}
+```
 
 ### How to use hox in class components
 
@@ -108,21 +129,25 @@ Of course, we use Hooks to define our models, but you can still retrieve and sub
 ```jsx
 class App extends Component {
   render() {
+    const { counter } = this.props;
+
     return (
       <div>
-        <p>{this.props.model.counter.count}</p>
-        <button onClick={this.model.counter.increment}>Increment</button>
+        <p>{counter.count}</p>
+        <button onClick={counter.increment}>Increment</button>
       </div>
     );
   }
 }
 
-export default withModel("counter")(App);
+export default withModel(useCounterModel, counter => ({
+  counter
+}))(App);
 ```
 
 ### Performance optimization
 
-In order to control the rerender of components, you can pass an odditional `depsFn` function to `useModel`.
+In order to control the data you want to subscribe precisely, you can pass an odditional `depsFn` function to `useXxxModel`.
 
 ```jsx
 const counter = useModel("counter", model => [model.count, model.x.y]);

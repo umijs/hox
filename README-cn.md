@@ -1,4 +1,5 @@
 [English](./README.md) | 简体中文
+
 # hox
 
 > 下一代 React 状态管理器
@@ -34,9 +35,8 @@ npm install --save hox
 
 > 注意：作为 model 的 custom Hook 不能接收参数，因为该 Hook 是全局的，不会随着函数每次执行而执行，只会在初始化的时候执行，或者手动触发执行。
 
-
 ```jsx
-import { createModel } from 'hox';
+import { createModel } from "hox";
 
 function useCounter() {
   const [count, setCount] = useState(0);
@@ -49,17 +49,17 @@ function useCounter() {
   };
 }
 
-export default createModel(useCounter)
+export default createModel(useCounter);
 ```
 
-> 通过 `createModel` ， hox 会返回一个新的 custom Hook，返回值 useCounterModel 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
+> 通过 `createModel` ， hox 会返回一个新的 custom Hook，用来获取 model 的数据。
 
 ### 使用 model
 
-还记得刚刚 `createModel` 返回的 `useCounterModel` 吗？在组件中调用这个 Hook ，就可以获取到 model 的数据了。
+还记得刚刚 `createModel` 的返回值吗？在组件中调用这个 Hook ，就可以获取到 model 的数据了。
 
 ```jsx
-import { useCounterModel } from "../models/counter";
+import useCounterModel from "../models/counter";
 
 function App(props) {
   const counter = useCounterModel();
@@ -72,7 +72,7 @@ function App(props) {
 }
 ```
 
- `useCounterModel` 是一个真正的 Hook，会订阅数据的更新。也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知所有使用 `useCounterModel` 的组件或 Hook。
+`useCounterModel` 是一个真正的 Hook，会订阅数据的更新。也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知所有使用 `useCounterModel` 的组件或 Hook。
 
 ## 进阶用法
 
@@ -102,19 +102,19 @@ export function useCounterDouble() {
 
 如下面的例子一样，我们可以通过 `useCounterModel.data` 来读取当前 model 中值，而不订阅它的更新。
 
-> useCounterModel.data 不是一个 Hook，你可以在任何场景中使用它。
+> `useCounterModel.data` 不是一个 Hook，你可以在任何场景中使用它。
 
 ```jsx
-import { useState } from 'React';
+import { useState } from "React";
 import { useCounterModel } from "./counter";
 
 export function logger() {
   const [log, setLog] = useState([]);
-  const logCount = ()=>{
+  const logCount = () => {
     const counter = useCounterModel.data;
     setLog(log.concat(counter));
-  }
-  
+  };
+
   return {
     log,
     logCount
@@ -128,10 +128,9 @@ export function logger() {
 
 ```jsx
 class App extends Component {
-
   render() {
-    const {counter} = this.props;
-    
+    const { counter } = this.props;
+
     return (
       <div>
         <p>{counter.count}</p>
@@ -141,7 +140,7 @@ class App extends Component {
   }
 }
 
-export default withModel(useCounterModel, (counter)=> ({
+export default withModel(useCounterModel, counter => ({
   counter
 }))(App);
 ```
