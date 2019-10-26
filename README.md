@@ -31,7 +31,8 @@ npm install --save hox
 
 在 hox 中，任意的 custom Hook，经过 `createModel` 包装后，就变成了持久化，且全局共享的数据。
 
-> 注意：作为 model 的 custom Hook 不能接收参数
+> 注意：作为 model 的 custom Hook 不能接收参数，因为 `createModel` 的参数 custom Hook 是全局的，不会随着函数每次执行而执行，只会在初始化的时候执行，或者手动触发执行。
+
 
 ```jsx
 import { createModel } from 'hox';
