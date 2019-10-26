@@ -126,7 +126,7 @@ export function logger() {
 class App extends Component {
 
   render() {
-    const counter = this.props.model.useCounterModel;
+    const {counter} = this.props;
     
     return (
       <div>
@@ -137,7 +137,9 @@ class App extends Component {
   }
 }
 
-export default withModel(useCounterModel)(App);
+export default withModel(useCounterModel, (counter)=> ({
+  counter
+}))(App);
 ```
 
 ### 性能优化
@@ -202,7 +204,7 @@ export interface UseModel<T> {
 ```typescript
 declare function withModel(
   useModel,
-  mapModelToProps?: (model, ownProps) => object
+  mapModelToProps: (model, ownProps) => object
 ): (C: ComponentType) => ComponentType;
 type ModelMap = {
   [key: string]: unknown;
@@ -213,16 +215,13 @@ type ModelMap = {
 
 第一个参数 `useModel` 用来描述需要获取哪些 model ，可以只传入一个 `useModel` ，也可以以数组的形式传入多个。
 
-第二个参数 `mapModelToProps` 用来定义 model 到组件 `props` 的映射规则。这个参数可以缺省，默认的行为是将 `modelMap` 绑到组件的 `model` 属性上。
+第二个参数 `mapModelToProps` 用来定义 model 到组件 `props` 的映射规则。
 
 示例：
 
 ```js
-// 不使用第二个参数，counter 会挂载到 props.model.useCounterModel 上
-export default withModel(useCounterModel)(App)
-
-// 使用第二个参数, 会将自定义的返回值挂载到 props，比如 props.count
-export default withModel(useCounterModel, (counter)=>({
+// 订阅单个 model
+export default withModel(useCounterModel, (counter) => ({
   count: counter.count
 }))(App)
 
