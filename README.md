@@ -1,3 +1,4 @@
+English | [简体中文](./README-cn.md)
 # hox
 
 > The next-generation state manager for React.
