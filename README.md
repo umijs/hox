@@ -10,7 +10,7 @@ English | [简体中文](./README-cn.md)
 
 ## Features
 
-- Only one API, simple and efficient. Almost no learning cost.
+- Just one API, simple and efficient. Almost no learning cost.
 - Define model with custom Hooks.
 - Perfect typescript support.
 - Supports multiple data sources.
