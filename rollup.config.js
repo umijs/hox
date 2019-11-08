@@ -1,6 +1,6 @@
 module.exports = {
-  external: ["react", "react-dom", "reflect-metadata"],
-  input: "lib/index.js",
+  external: ["react", "react-dom"],
+  input: "lib/es/index.js",
   output: {
     name: "hox",
     globals: {
