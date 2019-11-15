@@ -96,32 +96,6 @@ export function useCounterDouble() {
 }
 ```
 
-### Readonly
-
-In some scenarios, we only want to read the current value of a model, without subscribing to its updates.
-
-Just like the example below, we can read the current value of counter model from `useCounterModel.data`.
-
-> `useCounterModel.data` is not Hook, you can use it anywhere.
-
-```jsx
-import { useState } from "React";
-import { useCounterModel } from "./counter";
-
-export function logger() {
-  const [log, setLog] = useState([]);
-  const logCount = () => {
-    const counter = useCounterModel.data;
-    setLog(log.concat(counter));
-  };
-
-  return {
-    log,
-    logCount
-  };
-}
-```
-
 ### How to use hox in class components
 
 Of course, we use Hooks to define our models, but you can still retrieve and subscribe to models in class components:
