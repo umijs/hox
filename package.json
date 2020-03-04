@@ -1,6 +1,6 @@
 {
   "name": "hox",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "description": "React store with hooks.",
   "license": "MIT",
