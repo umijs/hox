@@ -1,19 +1,12 @@
 import ReactReconciler from "react-reconciler";
 import { ReactElement } from "react";
 
-const rootHostContext = {};
-const childHostContext = {};
-
 const hostConfig = {
   now: Date.now,
-  getRootHostContext: () => {
-    return rootHostContext;
-  },
+  getRootHostContext: () => ({}),
   prepareForCommit: () => {},
   resetAfterCommit: () => {},
-  getChildHostContext: () => {
-    return childHostContext;
-  },
+  getChildHostContext: () => ({}),
   shouldSetTextContent: () => true,
   createInstance: () => {},
   createTextInstance: () => {},
@@ -22,10 +15,8 @@ const hostConfig = {
   finalizeInitialChildren: () => {},
   supportsMutation: true,
   appendChildToContainer: () => {},
-  prepareUpdate() {
-    return true;
-  },
-  commitUpdate() {},
+  prepareUpdate: () => true,
+  commitUpdate: () => {},
   commitTextUpdate: () => {},
   removeChild: () => {}
 };
