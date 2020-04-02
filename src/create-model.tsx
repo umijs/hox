@@ -1,21 +1,19 @@
 import { ModelHook, UseModel } from "./types";
 import { Container } from "./container";
-import ReactDOM from "react-dom";
 import { Executor } from "./executor";
 import React, { useEffect, useRef, useState } from "react";
+import { render } from "./renderer";
 
 export function createModel<T>(hook: ModelHook<T>) {
-  const element = document.createElement("div");
   const container = new Container(hook);
-  ReactDOM.render(
+  render(
     <Executor
       onUpdate={val => {
         container.data = val;
         container.notify();
       }}
       hook={hook}
-    />,
-    element
+    />
   );
   const useModel: UseModel<T> = depsFn => {
     const [state, setState] = useState<T | undefined>(() =>
