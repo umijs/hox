@@ -6,8 +6,7 @@
   "license": "MIT",
   "private": false,
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.0"
   },
   "scripts": {
     "build": "gulp build",
@@ -44,6 +43,8 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "@types/hoist-non-react-statics": "^3.3.1"
+    "@types/hoist-non-react-statics": "^3.3.1",
+    "@types/react-reconciler": "^0.18.0",
+    "react-reconciler": "^0.25.1"
   }
 }

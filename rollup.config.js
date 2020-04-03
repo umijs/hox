@@ -1,5 +1,5 @@
 module.exports = {
-  external: ["react", "react-dom"],
+  external: ["react"],
   input: "lib/es/index.js",
   output: {
     name: "hox",
