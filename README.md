@@ -36,6 +36,7 @@ In hox, you can process a custom Hook with `createModel` to make it persistent a
 > Attention: The custom Hook you pass to `createModel` can not have parameters.
 
 ```jsx
+import { useState } from 'React';
 import { createModel } from "hox";
 
 function useCounter() {
