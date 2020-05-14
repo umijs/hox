@@ -79,9 +79,9 @@ function App(props) {
 
 ### Pass props to custom hooks
 
-Under certain circumstances, we might want to pass props to custom hooks.
+In some scenarios, we might want to pass props to custom hooks.
 
-Just like the example below, we could pass a second parameter to createModel to set Props for the custom hook. This is the best time to set the initial value.
+Just like the example below, we could pass props to the second parameter of createModel to set props for the custom hook. This is the best time to set the initial value.
 
 ```jsx
 import { useState } from "React";
