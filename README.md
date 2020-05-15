@@ -36,7 +36,7 @@ In hox, you can process a custom Hook with `createModel` to make it persistent a
 > Attention: The custom Hook you pass to `createModel` can not have parameters.
 
 ```jsx
-import { useState } from 'React';
+import { useState } from "React";
 import { createModel } from "hox";
 
 function useCounter() {
@@ -77,6 +77,31 @@ function App(props) {
 
 ## Advanced Usages
 
+### Pass values to custom hooks
+
+In some scenarios, we might want to pass values to custom hooks.
+
+Just like the example below, we could pass a value to the second parameter of createModel for the custom hook. This is the best time to set the initial value for `useState`, etc.
+
+```jsx
+import { useState } from "React";
+import { createModel } from "hox";
+
+function useCounter(initialValue) {
+  const [count, setCount] = useState(initialValue ?? 0);
+  const decrement = () => setCount(count - 1);
+  const increment = () => setCount(count + 1);
+  return {
+    count,
+    decrement,
+    increment
+  };
+}
+
+const useCounterModel = createModel(useCounter);
+const useCounterModelWithInitialValue = createModel(useCounter, 20);
+```
+
 ### Dependencies between models
 
 Although you can still design your model according to the traditional single data source pattern, we recommend splitting the big model into small parts. Therefore inevitably, we need to handle dependencies between multiple models. For example, the `order` model depends on the `account` model.
@@ -97,27 +122,28 @@ export function useCounterDouble() {
 }
 ```
 
-### Readonly	
+### Readonly
 
-In some scenarios, we only want to read the current value of a model, without subscribing to its updates.	
+In some scenarios, we only want to read the current value of a model, without subscribing to its updates.
 
-Just like the example below, we can read the current value of counter model from `useCounterModel.data`.	
+Just like the example below, we can read the current value of counter model from `useCounterModel.data`.
 
-> `useCounterModel.data` is not Hook, you can use it anywhere.	
-```jsx	
-import { useState } from "React";	
-import { useCounterModel } from "./counter";	
-export function logger() {	
-  const [log, setLog] = useState([]);	
-  const logCount = () => {	
-    const counter = useCounterModel.data;	
-    setLog(log.concat(counter));	
-  };	
-  return {	
-    log,	
-    logCount	
-  };	
-}	
+> `useCounterModel.data` is not Hook, you can use it anywhere.
+
+```jsx
+import { useState } from "React";
+import { useCounterModel } from "./counter";
+export function logger() {
+  const [log, setLog] = useState([]);
+  const logCount = () => {
+    const counter = useCounterModel.data;
+    setLog(log.concat(counter));
+  };
+  return {
+    log,
+    logCount
+  };
+}
 ```
 
 ### How to use hox in class components
@@ -164,7 +190,7 @@ In addition, we recommend splitting a large model into small parts, so that not 
 ### createModel
 
 ```typescript
-declare function createModel(hook: ModelHook): UseModel;
+declare function createModel(hook: ModelHook, hookArg?): UseModel;
 ```
 
 Create a model.
@@ -178,6 +204,8 @@ const useCounterModelA = createModel(useCounter);
 const useCounterModelB = createModel(useCounter);
 const useTimerModel = createModel(useTimer);
 ```
+
+You can also [pass values to custom hooks](#Pass-values-to-custom-hooks) to the second parameter of createModels for custom hooks.
 
 > Calling `createModel(useCounter)` two times will create two instances which are isolated from each other.
 
@@ -220,13 +248,16 @@ For example:
 
 ```js
 // subscibe to a single model
-export default withModel(useCounterModel, (counter) => ({
+export default withModel(useCounterModel, counter => ({
   count: counter.count
-}))(App)
+}))(App);
 
 // subscribe to multiple models
-export default withModel([useCounterModel, useTimerModel], ([counter, timer]) => ({
-  count: counter.count,
-  timer,
-}))(App)
+export default withModel(
+  [useCounterModel, useTimerModel],
+  ([counter, timer]) => ({
+    count: counter.count,
+    timer
+  })
+)(App);
 ```

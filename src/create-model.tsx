@@ -4,7 +4,7 @@ import { Executor } from "./executor";
 import React, { useEffect, useRef, useState } from "react";
 import { render } from "./renderer";
 
-export function createModel<T>(hook: ModelHook<T>) {
+export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   const container = new Container(hook);
   render(
     <Executor
@@ -12,7 +12,7 @@ export function createModel<T>(hook: ModelHook<T>) {
         container.data = val;
         container.notify();
       }}
-      hook={hook}
+      hook={() => hook(hookArg)}
     />
   );
   const useModel: UseModel<T> = depsFn => {

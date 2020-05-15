@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`createModel with arg 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      5
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`createModel with arg 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      6
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`simple 1`] = `
 <DocumentFragment>
   <div>

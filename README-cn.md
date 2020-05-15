@@ -36,7 +36,7 @@ npm install --save hox
 > 注意：作为 model 的 custom Hook 不能接收参数，因为该 Hook 是全局的，不会随着函数每次执行而执行，只会在初始化的时候执行，或者手动触发执行。
 
 ```jsx
-import { useState } from 'React';
+import { useState } from "React";
 import { createModel } from "hox";
 
 function useCounter() {
@@ -76,6 +76,31 @@ function App(props) {
 `useCounterModel` 是一个真正的 Hook，会订阅数据的更新。也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知所有使用 `useCounterModel` 的组件或 Hook。
 
 ## 进阶用法
+
+### 给 custom hook 传参
+
+当一个 custom hook 被用于不同的场景下，我们希望它们可以拥有不同的参数。
+
+如下方的例子一样，我们可以通过 `createModel` 的第二个参数，为 custom hook 设置一个参数。这是设置初始值的最佳时机。
+
+```jsx
+import { useState } from "React";
+import { createModel } from "hox";
+
+function useCounter(initialValue) {
+  const [count, setCount] = useState(initialValue ?? 0);
+  const decrement = () => setCount(count - 1);
+  const increment = () => setCount(count + 1);
+  return {
+    count,
+    decrement,
+    increment
+  };
+}
+
+const useCounterModel = createModel(useCounter);
+const useCounterModelWithInitialValue = createModel(useCounter, 20);
+```
 
 ### model 之间的依赖
 
@@ -167,7 +192,7 @@ const counter = useCounterModel(model => [model.count, model.x.y]);
 ### createModel
 
 ```typescript
-declare function createModel(hook: ModelHook): UseModel;
+declare function createModel(hook: ModelHook, hookArg?): UseModel;
 ```
 
 创建一个 model 。
@@ -181,6 +206,8 @@ const useCounterModelA = createModel(useCounter);
 const useCounterModelB = createModel(useCounter);
 const useTimerModel = createModel(useTimer);
 ```
+
+也可以通过第二个参数[给 custom hook 传参](#给-custom-hook-传参)。
 
 > 两次调用 `createModel(useCounter)` 会创建 model 的两个实例，彼此相互隔离。
 
@@ -223,13 +250,16 @@ type ModelMap = {
 
 ```js
 // 订阅单个 model
-export default withModel(useCounterModel, (counter) => ({
+export default withModel(useCounterModel, counter => ({
   count: counter.count
-}))(App)
+}))(App);
 
 // 订阅多个 model
-export default withModel([useCounterModel, useTimerModel], ([counter, timer]) => ({
-  count: counter.count,
-  timer,
-}))(App)
+export default withModel(
+  [useCounterModel, useTimerModel],
+  ([counter, timer]) => ({
+    count: counter.count,
+    timer
+  })
+)(App);
 ```
