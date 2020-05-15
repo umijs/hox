@@ -4,14 +4,14 @@ import { Component, FC, memo, useState } from "react";
 import * as testing from "@testing-library/react";
 
 test("simple", function() {
-  function useCounter() {
-    const [count, setCount] = useState(0);
+  function useCounter(initialValue: number) {
+    const [count, setCount] = useState(initialValue);
     const decrement = () => setCount(count - 1);
     const increment = () => setCount(count + 1);
     return { count, decrement, increment };
   }
 
-  const useCounterModel = createModel(useCounter);
+  const useCounterModel = createModel(useCounter, 5);
 
   const App: FC = () => {
     const counter = useCounterModel();

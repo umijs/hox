@@ -7,10 +7,10 @@ exports[`simple 1`] = `
       Change
     </button>
     <p>
-      0
+      5
     </p>
     <p>
-      0
+      5
     </p>
   </div>
 </DocumentFragment>
@@ -23,10 +23,10 @@ exports[`simple 2`] = `
       Change
     </button>
     <p>
-      1
+      6
     </p>
     <p>
-      1
+      6
     </p>
   </div>
 </DocumentFragment>
