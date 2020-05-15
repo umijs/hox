@@ -77,11 +77,11 @@ function App(props) {
 
 ## Advanced Usages
 
-### Pass a value to custom hooks
+### Pass values to custom hooks
 
-In some scenarios, we might want to pass a value to custom hooks.
+In some scenarios, we might want to pass values to custom hooks.
 
-Just like the example below, we could pass a value to the second parameter of createModel for the custom hook. This is the best time to set the initial value.
+Just like the example below, we could pass a value to the second parameter of createModel for the custom hook. This is the best time to set the initial value for `useState`, etc.
 
 ```jsx
 import { useState } from "React";
@@ -190,7 +190,7 @@ In addition, we recommend splitting a large model into small parts, so that not 
 ### createModel
 
 ```typescript
-declare function createModel(hook: ModelHook): UseModel;
+declare function createModel(hook: ModelHook, hookArg?): UseModel;
 ```
 
 Create a model.
@@ -204,6 +204,8 @@ const useCounterModelA = createModel(useCounter);
 const useCounterModelB = createModel(useCounter);
 const useTimerModel = createModel(useTimer);
 ```
+
+You can also [pass values to custom hooks](#Pass-values-to-custom-hooks) to the second parameter of createModels for custom hooks.
 
 > Calling `createModel(useCounter)` two times will create two instances which are isolated from each other.
 

@@ -192,7 +192,7 @@ const counter = useCounterModel(model => [model.count, model.x.y]);
 ### createModel
 
 ```typescript
-declare function createModel(hook: ModelHook): UseModel;
+declare function createModel(hook: ModelHook, hookArg?): UseModel;
 ```
 
 创建一个 model 。
@@ -206,6 +206,8 @@ const useCounterModelA = createModel(useCounter);
 const useCounterModelB = createModel(useCounter);
 const useTimerModel = createModel(useTimer);
 ```
+
+也可以通过第二个参数[给 custom hook 传参](#给-custom-hook-传参)。
 
 > 两次调用 `createModel(useCounter)` 会创建 model 的两个实例，彼此相互隔离。
 
