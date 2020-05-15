@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`simple 1`] = `
+exports[`createModel with arg 1`] = `
 <DocumentFragment>
   <div>
     <button>
@@ -9,8 +9,34 @@ exports[`simple 1`] = `
     <p>
       5
     </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`createModel with arg 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
     <p>
-      5
+      6
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`simple 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      0
+    </p>
+    <p>
+      0
     </p>
   </div>
 </DocumentFragment>
@@ -23,10 +49,10 @@ exports[`simple 2`] = `
       Change
     </button>
     <p>
-      6
+      1
     </p>
     <p>
-      6
+      1
     </p>
   </div>
 </DocumentFragment>

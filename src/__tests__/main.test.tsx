@@ -2,16 +2,17 @@ import { createModel, withModel } from "..";
 import * as React from "react";
 import { Component, FC, memo, useState } from "react";
 import * as testing from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
 
 test("simple", function() {
-  function useCounter(initialValue: number) {
-    const [count, setCount] = useState(initialValue);
+  function useCounter() {
+    const [count, setCount] = useState(0);
     const decrement = () => setCount(count - 1);
     const increment = () => setCount(count + 1);
     return { count, decrement, increment };
   }
 
-  const useCounterModel = createModel(useCounter, 5);
+  const useCounterModel = createModel(useCounter);
 
   const App: FC = () => {
     const counter = useCounterModel();
@@ -28,6 +29,31 @@ test("simple", function() {
   expect(renderer.asFragment()).toMatchSnapshot();
   testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
   expect(renderer.asFragment()).toMatchSnapshot();
+});
+
+test("createModel with arg", function() {
+  function useCounter(initalValue: number) {
+    const [count, setCount] = useState(initalValue);
+    const decrement = () => setCount(count - 1);
+    const increment = () => setCount(count + 1);
+    return { count, decrement, increment };
+  }
+
+  const useCounterModel = createModel(useCounter, 5);
+
+  const App: FC = () => {
+    const counter = useCounterModel();
+    return (
+      <div>
+        <button onClick={counter.increment}>Change</button>
+        <p>{counter.count}</p>
+      </div>
+    );
+  };
+  const { getByText, asFragment } = testing.render(<App />);
+  expect(asFragment()).toMatchSnapshot();
+  testing.fireEvent.click(getByText("Change"));
+  expect(asFragment()).toMatchSnapshot();
 });
 
 test("withModel", function() {
