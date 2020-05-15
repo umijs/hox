@@ -77,11 +77,11 @@ function App(props) {
 
 ## Advanced Usages
 
-### Pass props to custom hooks
+### Pass a value to custom hooks
 
-In some scenarios, we might want to pass props to custom hooks.
+In some scenarios, we might want to pass a value to custom hooks.
 
-Just like the example below, we could pass props to the second parameter of createModel to set props for the custom hook. This is the best time to set the initial value.
+Just like the example below, we could pass a value to the second parameter of createModel for the custom hook. This is the best time to set the initial value.
 
 ```jsx
 import { useState } from "React";

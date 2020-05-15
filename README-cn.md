@@ -77,11 +77,11 @@ function App(props) {
 
 ## 进阶用法
 
-### 为 custom hook 提供参数
+### 给 custom hook 传参
 
 当一个 custom hook 被用于不同的场景下，我们希望它们可以拥有不同的参数。
 
-如下方的例子一样，我们可以使用 `createModel` 的第二个参数，为 custom hook 设置 Props。这是设置初始值的最佳时机。
+如下方的例子一样，我们可以通过 `createModel` 的第二个参数，为 custom hook 设置一个参数。这是设置初始值的最佳时机。
 
 ```jsx
 import { useState } from "React";
