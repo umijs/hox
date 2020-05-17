@@ -174,7 +174,7 @@ export default withModel(useCounterModel, counter => ({
 In order to control the data you want to subscribe precisely, you can pass an odditional `depsFn` function to `useXxxModel`.
 
 ```jsx
-const counter = useModel("counter", model => [model.count, model.x.y]);
+const counter = useCounterModel(model => [model.count, model.x.y]);
 ```
 
 This is very similiar to the `deps` parameter of `useMemo` or `useEffect` . But remember, the `depsFn` of `useModel` is a **function** .
