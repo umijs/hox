@@ -84,7 +84,7 @@ In some scenarios, we might want to pass values to custom hooks.
 Just like the example below, we could pass a value to the second parameter of createModel for the custom hook. This is the best time to set the initial value for `useState`, etc.
 
 ```jsx
-import { useState } from "React";
+import { useState } from "react";
 import { createModel } from "hox";
 
 function useCounter(initialValue) {
@@ -131,7 +131,7 @@ Just like the example below, we can read the current value of counter model from
 > `useCounterModel.data` is not Hook, you can use it anywhere.
 
 ```jsx
-import { useState } from "React";
+import { useState } from "react";
 import { useCounterModel } from "./counter";
 export function logger() {
   const [log, setLog] = useState([]);

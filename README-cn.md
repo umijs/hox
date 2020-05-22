@@ -84,7 +84,7 @@ function App(props) {
 如下方的例子一样，我们可以通过 `createModel` 的第二个参数，为 custom hook 设置一个参数。这是设置初始值的最佳时机。
 
 ```jsx
-import { useState } from "React";
+import { useState } from "react";
 import { createModel } from "hox";
 
 function useCounter(initialValue) {
@@ -131,7 +131,7 @@ export function useCounterDouble() {
 > `useCounterModel.data` 不是一个 Hook，你可以在任何场景中使用它。
 
 ```jsx
-import { useState } from "React";
+import { useState } from "react";
 import { useCounterModel } from "./counter";
 
 export function logger() {
