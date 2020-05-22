@@ -36,7 +36,7 @@ npm install --save hox
 > 注意：作为 model 的 custom Hook 不能接收参数，因为该 Hook 是全局的，不会随着函数每次执行而执行，只会在初始化的时候执行，或者手动触发执行。
 
 ```jsx
-import { useState } from "React";
+import { useState } from "react";
 import { createModel } from "hox";
 
 function useCounter() {
