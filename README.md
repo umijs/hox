@@ -33,8 +33,6 @@ npm install --save hox
 
 In hox, you can process a custom Hook with `createModel` to make it persistent and globally shared.
 
-> Attention: The custom Hook you pass to `createModel` can not have parameters.
-
 ```jsx
 import { useState } from "react";
 import { createModel } from "hox";
@@ -53,7 +51,7 @@ function useCounter() {
 export default createModel(useCounter);
 ```
 
-> By calling `createModel`, hox will return a new custom Hook, which is used for retrieving model data.
+> By calling `createModel`, hox will return a new custom Hook, which is used for retrieving model data. Furthermore, we can [pass values to custom hooks](#Pass-values-to-custom-hooks) to the second parameter of createModels for custom hooks.
 
 ## Use model
 
