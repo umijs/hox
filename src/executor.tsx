@@ -1,4 +1,4 @@
-import {FC, memo, useEffect} from 'react'
+import {FC, forwardRef, memo, useEffect, useImperativeHandle} from 'react'
 import {StoreHook} from './store'
 
 interface Props {
@@ -7,11 +7,12 @@ interface Props {
   hookProps?: any
 }
 
-export const Executor: FC<Props> = props => {
+export const Executor = forwardRef<any, Props>((props, ref) => {
   const hookProps = props.hookProps ?? {}
   const result = props.storeHook(hookProps)
   useEffect(() => {
     props.onChange(result)
   })
+  useImperativeHandle(ref, () => result)
   return null
-}
+})

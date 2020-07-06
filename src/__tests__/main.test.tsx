@@ -14,6 +14,8 @@ test('simple', function () {
 
   const CounterStore = createStore(useCounter)
 
+  const ref = React.createRef<ReturnType<typeof useCounter>>()
+
   const App: FC = () => {
     const counter = useStore(CounterStore)
 
@@ -25,13 +27,14 @@ test('simple', function () {
     )
   }
   const renderer = testing.render(
-    <CounterStore.Provider>
+    <CounterStore.Provider ref={ref}>
       <App />
     </CounterStore.Provider>
   )
   expect(renderer.asFragment()).toMatchSnapshot()
   testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
   expect(renderer.asFragment()).toMatchSnapshot()
+  expect(ref.current.count).toBe(1)
 })
 
 // test("createModel with arg", function() {

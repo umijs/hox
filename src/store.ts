@@ -4,6 +4,7 @@ import {
   PropsWithChildren,
   PropsWithoutRef,
   RefAttributes,
+  RefObject,
 } from 'react'
 import {Container} from './container'
 

@@ -3,7 +3,7 @@ import {StoreHook} from './store'
 type Subscriber<T> = (data: T) => void
 
 export class Container<T = unknown> {
-  constructor(public hook: StoreHook<T>) {}
+  constructor(public hook: StoreHook<any, T>) {}
   subscribers = new Set<Subscriber<T>>()
   data!: T
 

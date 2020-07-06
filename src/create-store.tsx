@@ -2,7 +2,6 @@ import {
   default as React,
   forwardRef,
   PropsWithChildren,
-  useImperativeHandle,
   useRef,
   useState,
 } from 'react'
@@ -15,13 +14,11 @@ export function createStore<P = {}, V = unknown>(
 ): Store<P, V> {
   const Context = React.createContext(new Container<V>(defaultStoreValue))
   const Provider = forwardRef<V, PropsWithChildren<P>>(function (props, ref) {
-    const containerRef = useRef<Container<any>>()
+    const containerRef = useRef<Container<V>>()
     if (!containerRef.current) {
-      containerRef.current = new Container<any>(hook)
+      containerRef.current = new Container<V>(hook)
     }
     const container = containerRef.current
-
-    useImperativeHandle(ref, () => container as any)
 
     const [initialized, setInitialized] = useState(false)
     function onChange(value: any) {
@@ -32,7 +29,12 @@ export function createStore<P = {}, V = unknown>(
 
     return (
       <Context.Provider value={container}>
-        <Executor storeHook={hook} hookProps={props} onChange={onChange} />
+        <Executor
+          storeHook={hook}
+          hookProps={props}
+          onChange={onChange}
+          ref={ref}
+        />
         {initialized && props.children}
       </Context.Provider>
     )
