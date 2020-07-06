@@ -22,7 +22,7 @@ export function createStore<P = {}, V = unknown>(
   let Provider = forwardRef<V, PropsWithChildren<P>>(function (props, ref) {
     const containerRef = useRef<Container<V>>()
     if (!containerRef.current) {
-      containerRef.current = new Container<V>(hook)
+      containerRef.current = new Container<V>()
     }
     const container = containerRef.current
 
@@ -37,9 +37,10 @@ export function createStore<P = {}, V = unknown>(
       <Context.Provider value={container}>
         <Executor
           storeHook={hook}
-          hookProps={props}
+          hookProps={{...props, children: undefined}}
           onChange={onChange}
           ref={ref}
+          memo={!!options?.memo}
         />
         {initialized && props.children}
       </Context.Provider>
@@ -49,9 +50,6 @@ export function createStore<P = {}, V = unknown>(
     Provider.displayName = `HoxProvider(${hook.name})`
   } else {
     Provider.displayName = 'HoxProvider'
-  }
-  if (options?.memo) {
-    Provider = memo(Provider)
   }
   return {
     Provider,

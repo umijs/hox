@@ -38,7 +38,7 @@ export function useStore<S extends Store<any, any>>(
 
   if (state === defaultStoreValue) {
     throw new NoStoreError(
-      `No store context of "${name}" found. And "${name}" doesn't have defaultValue. Either render a Provider or set a defaultValue for this Store.`,
+      `No store context found. You need to render a Provider of this store.`,
       s
     )
   }

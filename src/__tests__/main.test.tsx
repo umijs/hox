@@ -51,14 +51,14 @@ test('memo', function () {
   let childARenderCount = 0
   const ChildA = memo(() => {
     childARenderCount++
-    const fooStore = useStore(FooStore)
+    useStore(FooStore)
     return null
   })
 
   let childBRenderCount = 0
   const ChildB = memo(() => {
     childBRenderCount++
-    const fooStore = useStore(FooStore)
+    useStore(MemoFooStore)
     return null
   })
 

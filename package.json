@@ -19,6 +19,7 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
+  "dependencies": {},
   "devDependencies": {
     "@testing-library/jest-dom": "^4.0.0",
     "@testing-library/react": "^9.3.0",
@@ -41,10 +42,5 @@
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
     "typescript": "^3.4.5"
-  },
-  "dependencies": {
-    "@types/hoist-non-react-statics": "^3.3.1",
-    "@types/react-reconciler": "^0.18.0",
-    "react-reconciler": "^0.25.1"
   }
 }
