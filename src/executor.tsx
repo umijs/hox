@@ -1,11 +1,17 @@
-import { ModelHook } from "./types";
-import { ReactElement } from "react";
+import {FC, memo, useEffect} from 'react'
+import {StoreHook} from './store'
 
-export function Executor<T>(props: {
-  hook: () => ReturnType<ModelHook<T>>;
-  onUpdate: (data: T) => void;
-}) {
-  const data = props.hook();
-  props.onUpdate(data);
-  return null as ReactElement;
+interface Props {
+  storeHook: StoreHook
+  onChange: (value: any) => void
+  hookProps?: any
+}
+
+export const Executor: FC<Props> = props => {
+  const hookProps = props.hookProps ?? {}
+  const result = props.storeHook(hookProps)
+  useEffect(() => {
+    props.onChange(result)
+  })
+  return null
 }
