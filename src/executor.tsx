@@ -7,7 +7,7 @@ interface Props {
   hookProps?: any
 }
 
-export const Executor = forwardRef<any, Props>((props, ref) => {
+export const Executor = forwardRef<any, Props>(function Executor(props, ref) {
   const hookProps = props.hookProps ?? {}
   const result = props.storeHook(hookProps)
   useEffect(() => {

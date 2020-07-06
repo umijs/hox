@@ -39,7 +39,11 @@ export function createStore<P = {}, V = unknown>(
       </Context.Provider>
     )
   })
-  Provider.displayName = 'Provider'
+  if (hook.name) {
+    Provider.displayName = `HoxProvider(${hook.name})`
+  } else {
+    Provider.displayName = 'HoxProvider'
+  }
   return {
     Provider,
     Context,
