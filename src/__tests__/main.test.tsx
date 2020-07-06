@@ -1,6 +1,6 @@
 import {createStore, useStore} from '..'
 import * as React from 'react'
-import {FC, useState} from 'react'
+import {FC, memo, useState} from 'react'
 import * as testing from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 
@@ -35,6 +35,60 @@ test('simple', function () {
   testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
   expect(renderer.asFragment()).toMatchSnapshot()
   expect(ref.current.count).toBe(1)
+})
+
+test('memo', function () {
+  function useFoo() {
+    return {}
+  }
+
+  const FooStore = createStore(useFoo)
+
+  const MemoFooStore = createStore(useFoo, {
+    memo: true,
+  })
+
+  let childARenderCount = 0
+  const ChildA = memo(() => {
+    childARenderCount++
+    const fooStore = useStore(FooStore)
+    return null
+  })
+
+  let childBRenderCount = 0
+  const ChildB = memo(() => {
+    childBRenderCount++
+    const fooStore = useStore(FooStore)
+    return null
+  })
+
+  const App: FC = () => {
+    const [flag, setFlag] = useState({})
+
+    return (
+      <div>
+        <FooStore.Provider>
+          <ChildA />
+        </FooStore.Provider>
+        <MemoFooStore.Provider>
+          <ChildB />
+        </MemoFooStore.Provider>
+        <button
+          onClick={() => {
+            setFlag({})
+          }}
+        >
+          Change
+        </button>
+      </div>
+    )
+  }
+  const renderer = testing.render(<App />)
+  expect(childARenderCount).toBe(1)
+  expect(childBRenderCount).toBe(1)
+  testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
+  expect(childARenderCount).toBe(2)
+  expect(childBRenderCount).toBe(1)
 })
 
 // test("createModel with arg", function() {

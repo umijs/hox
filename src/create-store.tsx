@@ -1,6 +1,7 @@
 import {
   default as React,
   forwardRef,
+  memo,
   PropsWithChildren,
   useRef,
   useState,
@@ -9,11 +10,16 @@ import {Container} from './container'
 import {defaultStoreValue, Store} from './store'
 import {Executor} from './executor'
 
+interface Options {
+  memo?: boolean
+}
+
 export function createStore<P = {}, V = unknown>(
-  hook: (props: P) => V
+  hook: (props: P) => V,
+  options?: Options
 ): Store<P, V> {
   const Context = React.createContext(new Container<V>(defaultStoreValue))
-  const Provider = forwardRef<V, PropsWithChildren<P>>(function (props, ref) {
+  let Provider = forwardRef<V, PropsWithChildren<P>>(function (props, ref) {
     const containerRef = useRef<Container<V>>()
     if (!containerRef.current) {
       containerRef.current = new Container<V>(hook)
@@ -43,6 +49,9 @@ export function createStore<P = {}, V = unknown>(
     Provider.displayName = `HoxProvider(${hook.name})`
   } else {
     Provider.displayName = 'HoxProvider'
+  }
+  if (options?.memo) {
+    Provider = memo(Provider)
   }
   return {
     Provider,
