@@ -1,6 +1,6 @@
 {
   "name": "hox",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "index.js",
   "description": "React store with hooks.",
   "license": "MIT",
@@ -45,6 +45,7 @@
   "dependencies": {
     "@types/hoist-non-react-statics": "^3.3.1",
     "@types/react-reconciler": "^0.18.0",
-    "react-reconciler": "^0.25.1"
+    "react-reconciler": "^0.25.1",
+    "use-action": "^1.0.2"
   }
 }

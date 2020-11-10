@@ -26,6 +26,26 @@ exports[`createModel with arg 2`] = `
 </DocumentFragment>
 `;
 
+exports[`immediate setState in useEffect 1`] = `
+<DocumentFragment>
+  <div>
+    <p>
+      1
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`setState timing 1`] = `
+<DocumentFragment>
+  <div>
+    <p>
+      1
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`simple 1`] = `
 <DocumentFragment>
   <div>

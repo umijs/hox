@@ -1,8 +1,10 @@
 import { createModel, withModel } from "..";
 import * as React from "react";
-import { Component, FC, memo, useState } from "react";
+import { Component, FC, useState } from "react";
 import * as testing from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
+import { act } from "react-dom/test-utils";
+import { useAction } from "use-action";
 
 test("simple", function() {
   function useCounter() {
@@ -88,5 +90,35 @@ test("withModel", function() {
   const renderer = testing.render(<AppWithModel />);
   expect(renderer.asFragment()).toMatchSnapshot();
   testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
+  expect(renderer.asFragment()).toMatchSnapshot();
+});
+
+test("setState timing", async function() {
+  function useCounter() {
+    const [count, setCount] = useState(0);
+    function change() {
+      setCount(1);
+    }
+    return { count, change };
+  }
+
+  const useCounterModel = createModel(useCounter);
+
+  const App: FC = () => {
+    const counter = useCounterModel();
+    useAction(() => {
+      act(() => {
+        useCounterModel.data.change();
+      });
+    }, []);
+    return (
+      <div>
+        <p>{counter.count}</p>
+      </div>
+    );
+  };
+
+  const renderer = testing.render(<App />);
+
   expect(renderer.asFragment()).toMatchSnapshot();
 });
