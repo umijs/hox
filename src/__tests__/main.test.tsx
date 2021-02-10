@@ -193,7 +193,9 @@ test("create lazy model", async function() {
       </div>
     );
   };
+  expect(useCounterModel.data).toBeUndefined();
   const renderer = testing.render(<App />);
+  expect(useCounterModel.data).toBeDefined();
   expect(renderer.asFragment()).toMatchSnapshot();
   act(() => {
     testing.fireEvent.click(testing.getByText(renderer.container, "Change"));

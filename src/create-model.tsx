@@ -62,7 +62,7 @@ export function createLazyModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   };
   Object.defineProperty(useLazyModel, "data", {
     get: function() {
-      return useModel.data;
+      return useModel?.data;
     }
   });
   return useLazyModel;
