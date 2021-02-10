@@ -32,6 +32,38 @@ exports[`async state update 2`] = `
 </DocumentFragment>
 `;
 
+exports[`create lazy model 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      0
+    </p>
+    <p>
+      0
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`create lazy model 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      1
+    </p>
+    <p>
+      1
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`createModel with arg 1`] = `
 <DocumentFragment>
   <div>

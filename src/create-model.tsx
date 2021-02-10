@@ -52,6 +52,22 @@ export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   return useModel;
 }
 
+export function createLazyModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
+  let useModel: UseModel<T>;
+  const useLazyModel: UseModel<T> = depsFn => {
+    if (!useModel) {
+      useModel = createModel(hook, hookArg);
+    }
+    return useModel(depsFn);
+  };
+  Object.defineProperty(useLazyModel, "data", {
+    get: function() {
+      return useModel.data;
+    }
+  });
+  return useLazyModel;
+}
+
 function compare(oldDeps: unknown[], newDeps: unknown[]) {
   if (oldDeps.length !== newDeps.length) {
     return true;
