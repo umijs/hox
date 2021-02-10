@@ -1,5 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`async state update 1`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      0
+    </p>
+    <p>
+      0
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`async state update 2`] = `
+<DocumentFragment>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      2
+    </p>
+    <p>
+      2
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`createModel with arg 1`] = `
 <DocumentFragment>
   <div>

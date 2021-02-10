@@ -1,10 +1,19 @@
 import { createModel, withModel } from "..";
 import * as React from "react";
-import { Component, FC, useState } from "react";
+import { Component, FC, useEffect, useState } from "react";
 import * as testing from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-dom/test-utils";
 import { useAction } from "use-action";
+import { usePersistFn } from "ahooks";
+
+function sleep(duration: number) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
 
 test("simple", function() {
   function useCounter() {
@@ -120,5 +129,44 @@ test("setState timing", async function() {
 
   const renderer = testing.render(<App />);
 
+  expect(renderer.asFragment()).toMatchSnapshot();
+});
+
+test("async state update", async function() {
+  function useCounter() {
+    const [count, setCount] = useState(0);
+    const increment = () => setCount(count + 1);
+    const asyncUpdate = usePersistFn(() => {
+      sleep(100).then(() => {
+        setCount(2);
+      });
+    });
+    useEffect(() => {
+      if (count === 1) {
+        asyncUpdate();
+      }
+    }, [count]);
+    return { count, increment };
+  }
+
+  const useCounterModel = createModel(useCounter);
+
+  const App: FC = () => {
+    const counter = useCounterModel();
+
+    return (
+      <div>
+        <button onClick={counter.increment}>Change</button>
+        <p>{counter.count}</p>
+        <p>{useCounterModel.data.count}</p>
+      </div>
+    );
+  };
+  const renderer = testing.render(<App />);
+  expect(renderer.asFragment()).toMatchSnapshot();
+  await act(async () => {
+    testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
+    await sleep(150);
+  });
   expect(renderer.asFragment()).toMatchSnapshot();
 });

@@ -27,6 +27,7 @@
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
     "@types/react-test-renderer": "^16.8.0",
+    "ahooks": "^2.9.6",
     "del": "^5.0.0",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
