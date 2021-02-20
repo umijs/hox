@@ -231,7 +231,7 @@ test("depsFn", function() {
     const counter = useCounterModel(data => [data.obj.b]);
     fn2();
 
-    return <button>{counter.obj.a}</button>;
+    return <button>{counter.obj.b}</button>;
   };
 
   const { getByText } = testing.render(<App1 />);
