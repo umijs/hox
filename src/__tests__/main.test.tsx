@@ -202,3 +202,44 @@ test("create lazy model", async function() {
   });
   expect(renderer.asFragment()).toMatchSnapshot();
 });
+
+test("depsFn", function() {
+  function useCounter() {
+    const [obj, setObj] = useState({
+      a: 1,
+      b: 2
+    });
+    const addA = () =>
+      setObj({
+        ...obj,
+        a: obj.a + 1
+      });
+
+    return { obj, addA };
+  }
+  const fn1 = jest.fn();
+  const fn2 = jest.fn();
+  const useCounterModel = createModel(useCounter);
+
+  const App1: FC = () => {
+    const counter = useCounterModel();
+    fn1();
+
+    return <button onClick={counter.addA}>Change</button>;
+  };
+  const App2: FC = () => {
+    const counter = useCounterModel(data => [data.obj.b]);
+    fn2();
+
+    return <button>{counter.obj.a}</button>;
+  };
+
+  const { getByText } = testing.render(<App1 />);
+  testing.render(<App2 />);
+  expect(fn1).toBeCalledTimes(1);
+  expect(fn2).toBeCalledTimes(1);
+
+  testing.fireEvent.click(getByText("Change"));
+  expect(fn1).toBeCalledTimes(2);
+  expect(fn2).toBeCalledTimes(1);
+});
