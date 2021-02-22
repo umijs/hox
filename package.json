@@ -46,8 +46,8 @@
   },
   "dependencies": {
     "@types/hoist-non-react-statics": "^3.3.1",
-    "@types/react-reconciler": "^0.26.0",
-    "react-reconciler": "^0.26.1",
+    "@types/react-reconciler": "^0.18.0",
+    "react-reconciler": "^0.25.1",
     "use-action": "^1.0.2"
   }
 }

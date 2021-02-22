@@ -24,6 +24,6 @@ const hostConfig = {
 const reconciler = ReactReconciler(hostConfig as any);
 
 export function render(reactElement: ReactElement) {
-  const container = reconciler.createContainer(null, 0, false, null);
+  const container = reconciler.createContainer(null, false, false);
   return reconciler.updateContainer(reactElement, container, null, null);
 }
