@@ -414,7 +414,7 @@
   resolved "https://registry.npm.taobao.org/@sheerun/mutationobserver-shim/download/@sheerun/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"
   integrity sha1-VAXujkRO0hLbROeTUfDHClgqriU=
 
-"@testing-library/dom@*":
+"@testing-library/dom@*", "@testing-library/dom@^7.29.6":
   version "7.29.6"
   resolved "https://registry.npm.taobao.org/@testing-library/dom/download/@testing-library/dom-7.29.6.tgz?cache=0&sync_timestamp=1613777370954&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40testing-library%2Fdom%2Fdownload%2F%40testing-library%2Fdom-7.29.6.tgz#eb37844fb431186db7960a7ff6749ea65a19617c"
   integrity sha1-6zeET7QxGG23lgp/9nSeploZYXw=
