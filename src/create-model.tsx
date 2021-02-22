@@ -18,11 +18,14 @@ export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   );
   const useModel: UseModel<T> = depsFn => {
     const [state, setState] = useState<T | undefined>(() =>
-      container ? (container.data as T) : undefined
+      container ? container.data : undefined
     );
     const depsFnRef = useRef(depsFn);
     depsFnRef.current = depsFn;
-    const depsRef = useRef<unknown[]>([]);
+    const depsRef = useRef<unknown[]>(
+      depsFnRef.current?.(container.data) || []
+    );
+
     useAction(() => {
       if (!container) return;
       function subscriber(val: T) {
