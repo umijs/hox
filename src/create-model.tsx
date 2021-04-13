@@ -3,7 +3,6 @@ import { Container } from "./container";
 import { Executor } from "./executor";
 import React, { useEffect, useRef, useState } from "react";
 import { render } from "./renderer";
-import { useAction } from "use-action";
 
 export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   const container = new Container(hook);
@@ -26,7 +25,7 @@ export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
       depsFnRef.current?.(container.data) || []
     );
 
-    useAction(() => {
+    useEffect(() => {
       if (!container) return;
       function subscriber(val: T) {
         if (!depsFnRef.current) {
