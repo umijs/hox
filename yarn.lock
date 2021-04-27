@@ -5436,11 +5436,6 @@ urix@^0.1.0:
   resolved "https://registry.npm.taobao.org/urix/download/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
 
-use-action@^1.0.2:
-  version "1.0.4"
-  resolved "https://registry.npm.taobao.org/use-action/download/use-action-1.0.4.tgz#51ef43d2977fcfecc6d9f66107e7d3594ddf6638"
-  integrity sha1-Ue9D0pd/z+zG2fZhB+fTWU3fZjg=
-
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.npm.taobao.org/use/download/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"

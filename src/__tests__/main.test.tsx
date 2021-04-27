@@ -4,7 +4,6 @@ import { Component, FC, useEffect, useState } from "react";
 import * as testing from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-dom/test-utils";
-import { useAction } from "use-action";
 import { usePersistFn } from "ahooks";
 import { createLazyModel } from "../create-model";
 
@@ -116,7 +115,7 @@ test("setState timing", async function() {
 
   const App: FC = () => {
     const counter = useCounterModel();
-    useAction(() => {
+    useEffect(() => {
       act(() => {
         useCounterModel.data.change();
       });
