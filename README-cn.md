@@ -171,7 +171,7 @@ export default withModel(useCounterModel, counter => ({
 
 ### 性能优化
 
-`createMoldel` 的返回值 `useXxxModel` 支持传入一个 `depsFn` 函数，来精确控制订阅的字段：
+`createModel` 的返回值 `useXxxModel` 支持传入一个 `depsFn` 函数，来精确控制订阅的字段：
 
 ```jsx
 const counter = useCounterModel(model => [model.count, model.x.y]);
