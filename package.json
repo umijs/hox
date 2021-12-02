@@ -48,5 +48,8 @@
     "@types/hoist-non-react-statics": "^3.3.1",
     "@types/react-reconciler": "^0.26.4",
     "react-reconciler": "^0.26.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
