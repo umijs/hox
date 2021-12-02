@@ -242,3 +242,47 @@ test("depsFn", function() {
   expect(fn1).toBeCalledTimes(2);
   expect(fn2).toBeCalledTimes(1);
 });
+
+test("depending", async () => {
+  const useCounterModel = createModel(function A() {
+    const [count, setCount] = useState(0);
+    const increment = () => setCount(count + 1);
+
+    return {
+      count,
+      increment
+    };
+  });
+
+  const useCounterModel2 = createModel(function B() {
+    console.log("useCounterModel");
+    const counterModel = useCounterModel();
+    const [count, setCount] = useState(counterModel.count || 1);
+    const increment = () => setCount(count + 1);
+
+    return {
+      count,
+      increment
+    };
+  });
+
+  const App: FC = () => {
+    const counterModel = useCounterModel();
+    const counterModel2 = useCounterModel2();
+
+    return (
+      <>
+        {counterModel.count} | {counterModel2.count}
+        <button onClick={counterModel.increment}>increment</button>
+      </>
+    );
+  };
+
+  const renderer = testing.render(<App />);
+  expect(renderer.asFragment()).toMatchSnapshot();
+  act(() => {
+    testing.fireEvent.click(renderer.getByText("increment"));
+  });
+  await sleep(10);
+  expect(renderer.asFragment()).toMatchSnapshot();
+});

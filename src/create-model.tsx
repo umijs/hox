@@ -8,6 +8,9 @@ export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
   const container = new Container(hook);
   render(
     <Executor
+      onMount={val => {
+        container.data = val;
+      }}
       onUpdate={val => {
         container.data = val;
         container.notify();
