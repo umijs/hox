@@ -32,24 +32,6 @@ exports[`async state update 2`] = `
 </DocumentFragment>
 `;
 
-exports[`circular 1`] = `
-<DocumentFragment>
-  0 | 1
-  <button>
-    increment
-  </button>
-</DocumentFragment>
-`;
-
-exports[`circular 2`] = `
-<DocumentFragment>
-  1 | 1
-  <button>
-    increment
-  </button>
-</DocumentFragment>
-`;
-
 exports[`create lazy model 1`] = `
 <DocumentFragment>
   <div>
