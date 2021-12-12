@@ -48,12 +48,12 @@ type MapModelToProps<TModelProps, TOwnProps, Model> = (
 export function withModel<TModelProps, TOwnProps, T>(
   useModel: UseModel<T>,
   mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>,
-  config: Config
+  config?: Config
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps, Model>(
   useModels: UseModel<any>[],
   mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>,
-  config: Config
+  config?: Config
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps>(
   useModelOrUseModels: UseModel<any> | UseModel<any>[],
