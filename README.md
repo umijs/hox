@@ -169,7 +169,7 @@ export default withModel(useCounterModel, counter => ({
 
 ### Performance optimization
 
-In order to control the data you want to subscribe precisely, you can pass an odditional `depsFn` function to `useXxxModel`.
+In order to control the data you want to subscribe precisely, you can pass an additional `depsFn` function to `useXxxModel`.
 
 ```jsx
 const counter = useCounterModel(model => [model.count, model.x.y]);
@@ -207,7 +207,7 @@ You can also [pass values to custom hooks](#Pass-values-to-custom-hooks) to the 
 
 > Calling `createModel(useCounter)` two times will create two instances which are isolated from each other.
 
-**useModel**
+**UseModel**
 
 `UseModel` is the return type of `createModel`. It is used for retrieving model and subscribing to its updates.
 
@@ -222,7 +222,7 @@ The parameter `depsFn` can be omitted. And it is used for [performance optimizat
 
 > `useModel` is a React Hook, so please follow React's [rules of hooks](https://reactjs.org/docs/hooks-rules.html).
 
-What's more, there is `data` field on `useModel`, which is used for read the current value of model. You'll find it quite useful when you try to just read value without subscribing to its updates, or try to use model in none-react environments.
+What's more, there is `data` field on `useModel`, which is used for reading the current value of the model. You'll find it quite useful when you try to just read the value without subscribing to its updates, or try to use model in none-react environments.
 
 ### withModel
 
