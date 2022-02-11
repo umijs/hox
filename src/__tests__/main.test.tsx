@@ -286,3 +286,36 @@ test("depending", async () => {
   await sleep(10);
   expect(renderer.asFragment()).toMatchSnapshot();
 });
+
+test("parent child", async () => {
+  const useCounterModel = createModel(function A() {
+    const [count, setCount] = useState(0);
+    const increment = () => setCount(count + 1);
+
+    return {
+      count,
+      increment
+    };
+  });
+
+  const Child: FC = () => {
+    const counter = useCounterModel();
+    useEffect(() => {
+      counter.increment();
+    }, []);
+    return <div>{counter.count}</div>;
+  };
+
+  const App: FC = () => {
+    const counterModel = useCounterModel();
+    return (
+      <>
+        {counterModel.count}
+        <Child />
+      </>
+    );
+  };
+
+  const renderer = testing.render(<App />);
+  expect(renderer.asFragment()).toMatchSnapshot();
+});

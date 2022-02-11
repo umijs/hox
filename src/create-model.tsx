@@ -43,6 +43,9 @@ export function createModel<T, P>(hook: ModelHook<T, P>, hookArg?: P) {
         }
       }
       container.subscribers.add(subscriber);
+      if (container.data !== state) {
+        setState(container.data);
+      }
       return () => {
         container.subscribers.delete(subscriber);
       };
