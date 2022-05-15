@@ -4,7 +4,7 @@ import { Component, FC, useEffect, useState } from "react";
 import * as testing from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-dom/test-utils";
-import { usePersistFn } from "ahooks";
+import { useMemoizedFn } from "ahooks";
 import { createLazyModel } from "../create-model";
 
 function sleep(duration: number) {
@@ -136,7 +136,7 @@ test("async state update", async function() {
   function useCounter() {
     const [count, setCount] = useState(0);
     const increment = () => setCount(count + 1);
-    const asyncUpdate = usePersistFn(() => {
+    const asyncUpdate = useMemoizedFn(() => {
       sleep(100).then(() => {
         setCount(2);
       });

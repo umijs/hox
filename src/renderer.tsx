@@ -31,6 +31,6 @@ const reconciler = ReactReconciler({
 });
 
 export function render(reactElement: ReactElement) {
-  const container = reconciler.createContainer(null, 0, false, null);
+  const container = reconciler.createContainer(null, 0, null,false, null, 'hox', () => {}, null);
   return reconciler.updateContainer(reactElement, container);
 }
