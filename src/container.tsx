@@ -1,15 +1,15 @@
-import { ModelHook } from "./types";
+import { ModelHook } from './types'
 
-type Subscriber<T> = (data: T) => void;
+type Subscriber<T> = (data: T) => void
 
 export class Container<T = unknown> {
   constructor(public hook: ModelHook<T>) {}
-  subscribers = new Set<Subscriber<T>>();
-  data!: T;
+  subscribers = new Set<Subscriber<T>>()
+  data!: T
 
   notify() {
     for (const subscriber of this.subscribers) {
-      subscriber(this.data);
+      subscriber(this.data)
     }
   }
 }

@@ -1,26 +1,26 @@
-import React, { ComponentType, FC, NamedExoticComponent } from "react";
-import { NonReactStatics } from "hoist-non-react-statics";
-import { UseModel } from "./types";
+import React, { ComponentType, FC, NamedExoticComponent } from 'react'
+import { NonReactStatics } from 'hoist-non-react-statics'
+import { UseModel } from './types'
 
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
-export type GetProps<C> = C extends ComponentType<infer P> ? P : never;
+export type GetProps<C> = C extends ComponentType<infer P> ? P : never
 
 export type ConnectedComponent<
   C extends ComponentType<any>,
   P
 > = NamedExoticComponent<JSX.LibraryManagedAttributes<C, P>> &
   NonReactStatics<C> & {
-    WrappedComponent: C;
-  };
+    WrappedComponent: C
+  }
 
 export type Matching<InjectedProps, DecorationTargetProps> = {
   [P in keyof DecorationTargetProps]: P extends keyof InjectedProps
     ? InjectedProps[P] extends DecorationTargetProps[P]
       ? DecorationTargetProps[P]
       : InjectedProps[P]
-    : DecorationTargetProps[P];
-};
+    : DecorationTargetProps[P]
+}
 
 export type Shared<InjectedProps, DecorationTargetProps> = {
   [P in Extract<
@@ -28,8 +28,8 @@ export type Shared<InjectedProps, DecorationTargetProps> = {
     keyof DecorationTargetProps
   >]?: InjectedProps[P] extends DecorationTargetProps[P]
     ? DecorationTargetProps[P]
-    : never;
-};
+    : never
+}
 
 export type InferableComponentEnhancerWithProps<TInjectedProps, TNeedsProps> = <
   C extends ComponentType<Matching<TInjectedProps, GetProps<C>>>
@@ -38,45 +38,45 @@ export type InferableComponentEnhancerWithProps<TInjectedProps, TNeedsProps> = <
 ) => ConnectedComponent<
   C,
   Omit<GetProps<C>, keyof Shared<TInjectedProps, GetProps<C>>> & TNeedsProps
->;
+>
 
 type MapModelToProps<TModelProps, TOwnProps, Model> = (
   model: Model,
   ownProps: TOwnProps
-) => TModelProps;
+) => TModelProps
 
 export function withModel<TModelProps, TOwnProps, T>(
   useModel: UseModel<T>,
   mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>
-): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
+): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
 export function withModel<TModelProps, TOwnProps, Model>(
   useModels: UseModel<any>[],
   mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>
-): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
+): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
 export function withModel<TModelProps, TOwnProps>(
   useModelOrUseModels: UseModel<any> | UseModel<any>[],
   mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any>
 ) {
-  return function(C) {
-    const Wrapper: FC<any> = function(props) {
-      let modelProps;
+  return function (C) {
+    const Wrapper: FC<any> = function (props) {
+      let modelProps
       if (Array.isArray(useModelOrUseModels)) {
-        const models = [];
+        const models = []
         for (const useModel of useModelOrUseModels) {
-          models.push(useModel());
+          models.push(useModel())
         }
-        modelProps = mapModelToProps(models, props);
+        modelProps = mapModelToProps(models, props)
       } else {
-        const model = useModelOrUseModels();
-        modelProps = mapModelToProps(model, props);
+        const model = useModelOrUseModels()
+        modelProps = mapModelToProps(model, props)
       }
       const componentProps = {
         ...props,
-        ...modelProps
-      };
-      return <C {...componentProps} />;
-    };
-    Wrapper.displayName = `${C.displayName}Wrapper`;
-    return Wrapper;
-  } as InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
+        ...modelProps,
+      }
+      return <C {...componentProps} />
+    }
+    Wrapper.displayName = `${C.displayName}Wrapper`
+    return Wrapper
+  } as InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
 }

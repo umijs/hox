@@ -1,7 +1,7 @@
-export type ModelHook<T = any, P = any> = (hookArg: P) => T;
+export type ModelHook<T = any, P = any> = (hookArg: P) => T
 
-type Deps<T> = (model: T) => unknown[];
+type Deps<T> = (model: T) => unknown[]
 export interface UseModel<T> {
-  (depsFn?: Deps<T>): T;
-  data?: T;
+  (depsFn?: Deps<T>): T
+  data?: T
 }

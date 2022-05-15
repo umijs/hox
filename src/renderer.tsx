@@ -1,5 +1,5 @@
-import ReactReconciler from "react-reconciler";
-import { ReactElement } from "react";
+import ReactReconciler from 'react-reconciler'
+import { ReactElement } from 'react'
 
 const reconciler = ReactReconciler({
   now: Date.now,
@@ -27,10 +27,19 @@ const reconciler = ReactReconciler({
   supportsHydration: false,
   scheduleTimeout: setTimeout,
   cancelTimeout: id => clearTimeout(id),
-  noTimeout: -1
-});
+  noTimeout: -1,
+})
 
 export function render(reactElement: ReactElement) {
-  const container = reconciler.createContainer(null, 0, null,false, null, 'hox', () => {}, null);
-  return reconciler.updateContainer(reactElement, container);
+  const container = reconciler.createContainer(
+    null,
+    0,
+    null,
+    false,
+    null,
+    'hox',
+    () => {},
+    null
+  )
+  return reconciler.updateContainer(reactElement, container)
 }
