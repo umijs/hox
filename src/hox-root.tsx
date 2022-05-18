@@ -1,11 +1,11 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Container } from './container'
 import { Executor } from './executor'
 
 // This list can only be pushed. Shift, unshift, pop, slice, etc are forbidden.
 export const globalContainers: Container<any>[] = []
 
-export const HoxRoot: FC = props => {
+export const HoxRoot: FC<PropsWithChildren<{}>> = props => {
   return (
     <>
       {/* TODO: memoize Executors */}

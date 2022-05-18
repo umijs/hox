@@ -7,7 +7,7 @@ import { act } from 'react-dom/test-utils'
 import { useMemoizedFn } from 'ahooks'
 
 function sleep(duration: number) {
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     setTimeout(() => {
       resolve()
     }, duration)
@@ -186,8 +186,8 @@ test('async state update', async function () {
   expect(renderer.asFragment()).toMatchSnapshot()
   await act(async () => {
     testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
-    await sleep(150)
   })
+  await sleep(200)
   expect(renderer.asFragment()).toMatchSnapshot()
 })
 
