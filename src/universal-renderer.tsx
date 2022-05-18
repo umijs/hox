@@ -41,5 +41,5 @@ export function render(reactElement: ReactElement) {
     () => {},
     null
   )
-  return reconciler.updateContainer(reactElement, container)
+  reconciler.updateContainer(reactElement, container)
 }

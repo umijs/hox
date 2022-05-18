@@ -1,9 +1,8 @@
-import { ModelHook } from './types'
-
 type Subscriber<T> = (data: T) => void
 
 export class Container<T = unknown> {
-  constructor(public hook: ModelHook<T>) {}
+  public initialized: boolean = false
+  constructor(public hook: () => T) {}
   subscribers = new Set<Subscriber<T>>()
   data!: T
 

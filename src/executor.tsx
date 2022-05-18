@@ -1,8 +1,7 @@
-import { ModelHook } from './types'
-import { ReactElement, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 export function Executor<T>(props: {
-  hook: () => ReturnType<ModelHook<T>>
+  hook: () => T
   onUpdate: (data: T) => void
   onMount: (data: T) => void
 }) {
@@ -11,6 +10,7 @@ export function Executor<T>(props: {
   if (!mountedRef.current) {
     props.onMount(data)
   }
+  // TODO: SSR
   useLayoutEffect(() => {
     if (!mountedRef.current) {
       mountedRef.current = true
@@ -18,5 +18,5 @@ export function Executor<T>(props: {
     }
     props.onUpdate(data)
   })
-  return null as ReactElement
+  return null
 }

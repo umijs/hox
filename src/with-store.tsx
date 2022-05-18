@@ -1,6 +1,6 @@
 import React, { ComponentType, FC, NamedExoticComponent } from 'react'
 import { NonReactStatics } from 'hoist-non-react-statics'
-import { UseModel } from './types'
+import { DepsFn } from './types'
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
@@ -40,43 +40,45 @@ export type InferableComponentEnhancerWithProps<TInjectedProps, TNeedsProps> = <
   Omit<GetProps<C>, keyof Shared<TInjectedProps, GetProps<C>>> & TNeedsProps
 >
 
-type MapModelToProps<TModelProps, TOwnProps, Model> = (
-  model: Model,
+type MapStoreToProps<TStoreProps, TOwnProps, Store> = (
+  store: Store,
   ownProps: TOwnProps
-) => TModelProps
+) => TStoreProps
 
-export function withModel<TModelProps, TOwnProps, T>(
-  useModel: UseModel<T>,
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>
-): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
-export function withModel<TModelProps, TOwnProps, Model>(
-  useModels: UseModel<any>[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>
-): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
-export function withModel<TModelProps, TOwnProps>(
-  useModelOrUseModels: UseModel<any> | UseModel<any>[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any>
+type UseStore<T> = (depsFn?: DepsFn<T>) => T
+
+export function withStore<TStoreProps, TOwnProps, T>(
+  useStore: UseStore<T>,
+  mapStoreToProps: MapStoreToProps<TStoreProps, TOwnProps, T>
+): InferableComponentEnhancerWithProps<TStoreProps, TOwnProps>
+export function withStore<TStoreProps, TOwnProps, Store>(
+  useStores: UseStore<any>[],
+  mapStoreToProps: MapStoreToProps<TStoreProps, TOwnProps, any[]>
+): InferableComponentEnhancerWithProps<TStoreProps, TOwnProps>
+export function withStore<TStoreProps, TOwnProps>(
+  useStoreOrUseStores: UseStore<any> | UseStore<any>[],
+  mapStoreToProps: MapStoreToProps<TStoreProps, TOwnProps, any>
 ) {
   return function (C) {
     const Wrapper: FC<any> = function (props) {
-      let modelProps
-      if (Array.isArray(useModelOrUseModels)) {
-        const models = []
-        for (const useModel of useModelOrUseModels) {
-          models.push(useModel())
+      let storeProps
+      if (Array.isArray(useStoreOrUseStores)) {
+        const stores = []
+        for (const useStore of useStoreOrUseStores) {
+          stores.push(useStore())
         }
-        modelProps = mapModelToProps(models, props)
+        storeProps = mapStoreToProps(stores, props)
       } else {
-        const model = useModelOrUseModels()
-        modelProps = mapModelToProps(model, props)
+        const store = useStoreOrUseStores()
+        storeProps = mapStoreToProps(store, props)
       }
       const componentProps = {
         ...props,
-        ...modelProps,
+        ...storeProps,
       }
       return <C {...componentProps} />
     }
     Wrapper.displayName = `${C.displayName}Wrapper`
     return Wrapper
-  } as InferableComponentEnhancerWithProps<TModelProps, TOwnProps>
+  } as InferableComponentEnhancerWithProps<TStoreProps, TOwnProps>
 }

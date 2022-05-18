@@ -153,7 +153,7 @@ export function logger() {
 ```jsx
 class App extends Component {
   render() {
-    const { counter } = this.props;
+    const {counter} = this.props;
 
     return (
       <div>
@@ -164,7 +164,7 @@ class App extends Component {
   }
 }
 
-export default withModel(useCounterModel, counter => ({
+export default withStore(useCounterModel, counter => ({
   counter
 }))(App);
 ```
@@ -248,12 +248,12 @@ type ModelMap = {
 
 ```js
 // 订阅单个 model
-export default withModel(useCounterModel, counter => ({
+export default withStore(useCounterModel, counter => ({
   count: counter.count
 }))(App);
 
 // 订阅多个 model
-export default withModel(
+export default withStore(
   [useCounterModel, useTimerModel],
   ([counter, timer]) => ({
     count: counter.count,

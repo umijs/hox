@@ -151,7 +151,7 @@ Of course, we use Hooks to define our models, but you can still retrieve and sub
 ```jsx
 class App extends Component {
   render() {
-    const { counter } = this.props;
+    const {counter} = this.props;
 
     return (
       <div>
@@ -162,7 +162,7 @@ class App extends Component {
   }
 }
 
-export default withModel(useCounterModel, counter => ({
+export default withStore(useCounterModel, counter => ({
   counter
 }))(App);
 ```
@@ -246,12 +246,12 @@ For example:
 
 ```js
 // subscibe to a single model
-export default withModel(useCounterModel, counter => ({
+export default withStore(useCounterModel, counter => ({
   count: counter.count
 }))(App);
 
 // subscribe to multiple models
-export default withModel(
+export default withStore(
   [useCounterModel, useTimerModel],
   ([counter, timer]) => ({
     count: counter.count,
