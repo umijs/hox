@@ -1,6 +1,6 @@
 import React, { ComponentType, FC, NamedExoticComponent } from "react";
 import { NonReactStatics } from "hoist-non-react-statics";
-import { UseModel } from "./types";
+import { UseModel, Config } from "./types";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -47,15 +47,18 @@ type MapModelToProps<TModelProps, TOwnProps, Model> = (
 
 export function withModel<TModelProps, TOwnProps, T>(
   useModel: UseModel<T>,
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, T>,
+  config?: Config
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps, Model>(
   useModels: UseModel<any>[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any[]>,
+  config?: Config
 ): InferableComponentEnhancerWithProps<TModelProps, TOwnProps>;
 export function withModel<TModelProps, TOwnProps>(
   useModelOrUseModels: UseModel<any> | UseModel<any>[],
-  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any>
+  mapModelToProps: MapModelToProps<TModelProps, TOwnProps, any>,
+  config: Config = { forwardRef: true }
 ) {
   return function(C) {
     const Wrapper: FC<any> = function(props) {
@@ -72,7 +75,10 @@ export function withModel<TModelProps, TOwnProps>(
       }
       const componentProps = {
         ...props,
-        ...modelProps
+        ...modelProps,
+        ...{
+          ref: config.forwardRef ? props.onRef : undefined
+        }
       };
       return <C {...componentProps} />;
     };

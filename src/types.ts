@@ -5,3 +5,7 @@ export interface UseModel<T> {
   (depsFn?: Deps<T>): T;
   data?: T;
 }
+
+export interface Config {
+  forwardRef: Boolean;
+}
