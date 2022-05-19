@@ -32,6 +32,46 @@ exports[`async state update 2`] = `
 </DocumentFragment>
 `;
 
+exports[`call createGlobalStore after HoxRoot get mounted 1`] = `
+<DocumentFragment>
+  <button>
+    Enable
+  </button>
+</DocumentFragment>
+`;
+
+exports[`call createGlobalStore after HoxRoot get mounted 2`] = `
+<DocumentFragment>
+  <button>
+    Enable
+  </button>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      0
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`call createGlobalStore after HoxRoot get mounted 3`] = `
+<DocumentFragment>
+  <button>
+    Enable
+  </button>
+  <div>
+    <button>
+      Change
+    </button>
+    <p>
+      1
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`createGlobalStore with arg 1`] = `
 <DocumentFragment>
   <div>

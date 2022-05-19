@@ -25,6 +25,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/use-sync-external-store": "^0.0.3",
     "ahooks": "^3.3.10",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
@@ -42,7 +43,9 @@
     "tslint": "^6.1.3",
     "typescript": "~4.5.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "use-sync-external-store": "^1.1.0"
+  },
   "resolutions": {
     "@types/react": "18",
     "@types/react-dom": "18"

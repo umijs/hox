@@ -1,5 +1,5 @@
 import { Container } from './container'
-import { globalContainers } from './hox-root'
+import { registerGlobalContainer } from './hox-root'
 import { useDataFromContainer } from './use-data-from-container'
 import { DepsFn } from './types'
 
@@ -10,7 +10,7 @@ export interface UseGlobalStore<T> {
 
 export function createGlobalStore<T>(hook: () => T) {
   const container = new Container(hook)
-  globalContainers.push(container)
+  registerGlobalContainer(container)
   const useGlobalStore: UseGlobalStore<T> = (depsFn?: DepsFn<T>) => {
     if (!container.initialized) {
       console.error(

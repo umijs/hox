@@ -1,6 +1,6 @@
 import { createGlobalStore, createStore, HoxRoot, withStore } from '..'
 import * as React from 'react'
-import { Component, FC, useEffect, useState } from 'react'
+import { Component, FC, ReactElement, useEffect, useState } from 'react'
 import * as testing from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import { act } from 'react-dom/test-utils'
@@ -70,6 +70,58 @@ test('createGlobalStore with arg', function () {
       <App />
     </HoxRoot>
   )
+  expect(asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(getByText('Change'))
+  expect(asFragment()).toMatchSnapshot()
+})
+
+test('call createGlobalStore after HoxRoot get mounted', function () {
+  function useCounter() {
+    const [count, setCount] = useState(0)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
+  }
+
+  let appElement: ReactElement
+
+  const AppWrapper: FC = props => {
+    const [enable, setEnable] = useState(false)
+    return (
+      <>
+        <button
+          onClick={() => {
+            setEnable(true)
+          }}
+        >
+          Enable
+        </button>
+        {enable && appElement}
+      </>
+    )
+  }
+
+  const { getByText, asFragment } = testing.render(
+    <HoxRoot>
+      <AppWrapper />
+    </HoxRoot>
+  )
+
+  expect(asFragment()).toMatchSnapshot()
+
+  const useCounterModel = createGlobalStore(useCounter)
+  const App: FC = () => {
+    const counter = useCounterModel()
+    return (
+      <div>
+        <button onClick={counter.increment}>Change</button>
+        <p>{counter.count}</p>
+      </div>
+    )
+  }
+  appElement = <App />
+
+  testing.fireEvent.click(getByText('Enable'))
   expect(asFragment()).toMatchSnapshot()
   testing.fireEvent.click(getByText('Change'))
   expect(asFragment()).toMatchSnapshot()
