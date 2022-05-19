@@ -7,12 +7,4 @@ module.exports = {
   jsxSingleQuote: true,
   quoteProps: 'preserve',
   arrowParens: 'avoid',
-  overrides: [
-    {
-      'files': ['*.md'],
-      'options': {
-        embeddedLanguageFormatting: 'off',
-      },
-    },
-  ],
 }

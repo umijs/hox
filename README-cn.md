@@ -10,10 +10,7 @@
 
 ## 特性
 
-- 只有一个 API，简单高效，几乎无需学习成本
-- 使用 custom Hooks 来定义 model，完美拥抱 React Hooks
-- 完美的 TypeScript 支持
-- 支持多数据源，随用随取
+TODO
 
 ## 在线体验
 
@@ -29,235 +26,276 @@ npm install --save hox
 
 ## 快速上手
 
-### 创建一个 model
+### 创建一个 store
 
-在 hox 中，任意的 custom Hook，经过 `createModel` 包装后，就变成了持久化，且全局共享的数据。
+在 hox 中，任意的 custom Hook，经过 `createStore` 包装后，就变成了持久化，可以在组件间进行共享的状态。
 
 ```jsx
-import { useState } from "react";
-import { createModel } from "hox";
+import { useState } from 'react'
+import { createStore } from 'hox'
 
-function useCounter() {
-  const [count, setCount] = useState(0);
-  const decrement = () => setCount(count - 1);
-  const increment = () => setCount(count + 1);
+export const [useTaskStore, TaskStoreProvider] = createStore(() => {
+  const [tasks, setTasks] = useState([])
+
+  function addTask(task) {
+    setTasks(v => [...v, task])
+  }
+
+  function finishTask(task) {
+    setTasks(v => v.filter(t => t !== task))
+  }
+
   return {
-    count,
-    decrement,
-    increment
-  };
-}
-
-export default createModel(useCounter);
+    tasks,
+    addTask,
+    finishTask,
+  }
+})
 ```
 
-> 通过 `createModel` ， hox 会返回一个新的 custom Hook，用来获取 model 的数据。`createModel` 还可以接收第二个参数，便于[给 custom hook 传参](#给-custom-hook-传参)
+`createStore` 会返回一个数组，里面有两个元素，你可以通过 ES6 的数组解构语法把他们解构出来，并且取成符合业务逻辑的名字，例如上面的 `useTaskStore` 和 `TaskStoreProvider`。
 
-### 使用 model
-
-还记得刚刚 `createModel` 的返回值吗？在组件中调用这个 Hook ，就可以获取到 model 的数据了。
+`TaskStoreProvider` 是状态的容器，它的底层是依赖了 React Context 所以你需要把它注入到组件树中，例如：
 
 ```jsx
-import useCounterModel from "../models/counter";
+<App>
+  <Header />
+  <TaskStoreProvider>
+    <TaskList>
+      <TaskItem />
+      <TaskItem />
+      <TaskItem />
+    </TaskList>
+  </TaskStoreProvider>
+</App>
+```
 
-function App(props) {
-  const counter = useCounterModel();
+接下来可以在 `TaskList` 组件中使用 `useTaskStore` 订阅和消费 store 中的数据：
+
+```jsx
+function TaskList() {
+  const { tasks } = useTaskStore()
   return (
-    <div>
-      <p>{counter.count}</p>
-      <button onClick={counter.increment}>Increment</button>
-    </div>
-  );
+    <>
+      {tasks.map(task => (
+        <TaskItem key={task.id} task={task} />
+      ))}
+    </>
+  )
 }
 ```
 
-`useCounterModel` 是一个真正的 Hook，会订阅数据的更新。也就是说，当点击 "Increment" 按钮时，会触发 counter model 的更新，并且最终通知所有使用 `useCounterModel` 的组件或 Hook。
+每次 TaskStore 更新时，TaskList 都会自动重新渲染，并且获取到最新的 `tasks` 数据。
 
-## 进阶用法
+> `useStore` 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
 
-### 给 custom hook 传参
+我们推荐 `useXxxStore` 和 `XxxStoreProvider` 这样的命名，因为它们更加明确，但是如果你觉得它们名字太长了，也可以考虑缩写成 `useXxx` 和 `XxxProvider`。
 
-当一个 custom hook 被用于不同的场景下，我们希望它们可以拥有不同的参数。
+### store 的上下文和多个实例
 
-如下方的例子一样，我们可以通过 `createModel` 的第二个参数，为 custom hook 设置一个参数。这是设置初始值的最佳时机。
+需要注意的是，只有 `CounterStoreProvider` 的内部节点才可以获取到它的上下文，所以在 `Header` 组件中是不可以调用 `useTaskStore` 的。如果你熟悉 React 的 Context
+特性，那么这一点是很好理解的。
 
 ```jsx
-import { useState } from "react";
-import { createModel } from "hox";
-
-function useCounter(initialValue) {
-  const [count, setCount] = useState(initialValue ?? 0);
-  const decrement = () => setCount(count - 1);
-  const increment = () => setCount(count + 1);
-  return {
-    count,
-    decrement,
-    increment
-  };
-}
-
-const useCounterModel = createModel(useCounter);
-const useCounterModelWithInitialValue = createModel(useCounter, 20);
+<App>
+  <Header />
+  <TaskStoreProvider>
+    <TaskList>...</TaskList>
+  </TaskStoreProvider>
+</App>
 ```
 
-### model 之间的依赖
+每渲染一个 `TaskStoreProvider`，就会对应的创建一个 store 的实例，基于这个特性，你可以在页面上渲染多个 StoreProvider，来实现多实例，并且根据 Context 的上下文，在子节点组件中自动地获取到对应的
+store 实例：
 
-虽然你仍然可以按照传统的单一数据源的思想进行 model 的设计，但我们更推荐将 model 拆分成多个小部分，于是不可避免的，我们需要在多个 model 之间处理依赖关系，例如订单模块 `order` 依赖账户模块 `account` 。
+```jsx
+<TaskStoreProvider>
+  <TaskList>
+    ...
+  </TaskList>
+</TaskStoreProvider>
+<TaskStoreProvider>
+  <TaskList>
+    ...
+  </TaskList>
+</TaskStoreProvider>
+```
 
-在 hox 中，处理模块之间的依赖非常简单且自然：在一个 model 中可以直接使用 `useXXXModel` 来获取另一个 model，并订阅其更新，和在组件中使用并无两样。
+不同 StoreProvider 实例之间，数据是完全独立和隔离的，就像是同一个 React 组件的多个实例一样。
+
+你甚至可以在 `TaskStoreProvider` 子节点中再渲染一个 `TaskStoreProvider`，根据 Context 的特性，`TaskList` 组件会自动寻找到最近的父级 Prodiver：
+
+```jsx
+<TaskStoreProvider>
+  <TaskList>...</TaskList>
+  <TaskStoreProvider>
+    <TaskList>...</TaskList>
+  </TaskStoreProvider>
+</TaskStoreProvider>
+```
+
+当然，一般来说不太会需要这么用。
+
+### store 之间的依赖
+
+虽然你仍然可以按照传统的单一数据源的思想进行 store 的设计，但我们更推荐将 store 拆分成多个小部分，于是不可避免的，我们需要在多个 store 之间处理依赖关系，例如任务列表模块 `task` 依赖账户模块 `account`
+。
+
+在 hox 中，处理模块之间的依赖非常简单且自然：在一个 store 中可以直接使用 `useXXXStore` 来获取另一个 store，并订阅其更新，和在组件中使用并无两样。
 
 > 提醒：小心循环依赖！
 
 ```jsx
-import { useCounterModel } from "./counter";
+import { useAccountStore } from './account-store'
 
-export function useCounterDouble() {
-  const counter = useCounterModel();
-  return {
-    ...counter,
-    count: counter.count * 2
-  };
-}
+export const [useTaskStore, TaskStoreProvider] = createStore(() => {
+  // ...
+  const { user } = useAccountStore()
+
+  function addTask(taskName) {
+    setTasks(v => [
+      ...v,
+      {
+        name: taskName,
+        assignee: user.id,
+      },
+    ])
+  }
+
+  // ...
+})
 ```
 
-### 只读不订阅更新
+### 全局 store
 
-在某些场景下，我们只希望读取当前 model 的值，而不希望订阅其更新。
-
-如下面的例子一样，我们可以通过 `useCounterModel.data` 来读取当前 model 中值，而不订阅它的更新。
-
-> `useCounterModel.data` 不是一个 Hook，你可以在任何场景中使用它。
+其实并不是所有的 store 都需要有一个作用域、需要支持多个实例，在一个真实的项目中，大部分的 store 可能都是全局性的，而如果你每次都手动添加 StoreProvider，可能会感到崩溃：
 
 ```jsx
-import { useState } from "react";
-import { useCounterModel } from "./counter";
+<AccountStoreProvider>
+  <TaskStoreProvider>
+    <FooStoreProvider>
+      <BarStoreProvider>
+        <App />
+      </BarStoreProvider>
+    </FooStoreProvider>
+  </TaskStoreProvider>
+</AccountStoreProvider>
+```
 
-export function logger() {
-  const [log, setLog] = useState([]);
-  const logCount = () => {
-    const counter = useCounterModel.data;
-    setLog(log.concat(counter));
-  };
+因此，hox 提供了另一种类型的 store：全局 store。
 
-  return {
-    log,
-    logCount
-  };
+你可以通过 `createGlobalStore` 来创建一个全局 `store`：
+
+```js
+import { createGlobalStore } from 'hox'
+
+const useAccount = createGlobalStore(() => {
+  // ...
+})
+```
+
+需要留意，`createGlobalStore` 返回的并不是一个数组，而是用来订阅 store 的 Hook 函数，关于它的用法，这里就不再介绍了，和普通 store 是一样的。
+
+可以发现，对于全局 store，并没有对应的 StoreProvider 组件，因此你不需要每次创建一个 store，就手动添加一层 Provider。不过，为了让全局 store 能够正常注册，你需要在整个 React
+应用的最外层用 `HoxRoot` 包裹一下：
+
+```jsx
+import { HoxRoot } from 'hox'
+
+;<HoxRoot>
+  <App />
+</HoxRoot>
+```
+
+你可以把 `HoxRoot` 想象成所有全局 store 的统一的 StoreProvider，可以通过它一次性地把所有全局 store 都注册掉。
+
+全局 store 还有另一个非常方便的特性：`data` 属性。
+
+`createGlobalStore` 返回的 Hook 函数上有一个特殊的 `data` 属性，你可以通过它读取到 store 当前最新的值。当你在 React 组件外想使用 store 中的数据，或者是想调用 store
+提供的某个方法时，可以直接读取 `data` 属性。
+
+```js
+export function log(message) {
+  const { user } = useAccountStore.data
+  report.requestApi({
+    message,
+    userId: user.id,
+  })
 }
 ```
+
+## 进阶用法
+
+### 给 store 传参
+
+TODO
 
 ### 在类组件中使用
 
-虽然 model 是使用的 Hooks 语法，但你仍然可以在类组件中获取和订阅 model ：
+虽然 store 是使用的 Hooks 语法，但你仍然可以在类组件中获取和订阅 store，这依赖了 hox 提供的 `withStore` 高阶组件：
 
 ```jsx
 class App extends Component {
   render() {
-    const {counter} = this.props;
+    const { counter } = this.props
 
     return (
       <div>
         <p>{counter.count}</p>
         <button onClick={counter.increment}>Increment</button>
       </div>
-    );
+    )
   }
 }
 
-export default withStore(useCounterModel, counter => ({
-  counter
-}))(App);
+export default withStore(useCounterStore, counter => ({
+  counter,
+}))(App)
 ```
 
-### 性能优化
+`withStore` 用来在类组件中使用 store ，它的用法类似于 react-redux 中的 `connect` 。
 
-`createModel` 的返回值 `useXxxModel` 支持传入一个 `depsFn` 函数，来精确控制订阅的字段：
+第一个参数 `useStore` 用来描述需要获取哪些 store ，可以只传入一个 `useStore` ，也可以以数组的形式传入多个。
 
-```jsx
-const counter = useCounterModel(model => [model.count, model.x.y]);
-```
-
-这和 `useMemo` 、 `useEffect` 的 `deps` 非常相似，但是， `useModel` 的 `depsFn` 参数是一个**函数**。
-
-此外，我们建议对一个庞大的 model 进行拆分，这样不仅代码更易于维护，性能也会有所改善。
-
-## 最佳实践
-
-[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hox-best-practice-fszmp)
-
-## API
-
-### createModel
+第二个参数 `mapStoreToProps` 用来定义 store 到组件 `props` 的映射规则。
 
 ```typescript
-declare function createModel(hook: ModelHook, hookArg?): UseModel;
-```
+declare function withStore(
+  useStore,
+  mapStoreToProps: (store, ownProps) => object
+): (C: ComponentType) => ComponentType
 
-创建一个 model 。
-
-参数是一个 custom Hook ，用于定义 model 的内部逻辑。
-
-可以多次调用，来创建多个 model ：
-
-```jsx
-const useCounterModelA = createModel(useCounter);
-const useCounterModelB = createModel(useCounter);
-const useTimerModel = createModel(useTimer);
-```
-
-也可以通过第二个参数[给 custom hook 传参](#给-custom-hook-传参)。
-
-> 两次调用 `createModel(useCounter)` 会创建 model 的两个实例，彼此相互隔离。
-
-**UseModel**
-
-`UseModel` 是 `createModel` 的返回值类型，它用来获取 model 并订阅其更新。
-
-```typescript
-export interface UseModel<T> {
-  (depsFn?: (model: T) => unknown[]): T;
-  data?: T;
+type StoreMap = {
+  [key: string]: unknown
 }
 ```
-
-参数 `depsFn` 可以缺省，用于[性能优化](#性能优化)。
-
-> `useModel` 是一个 React Hook ，所以在使用它的时候，请遵守 React 的 [rules of hooks](https://reactjs.org/docs/hooks-rules.html) 。
-
-此外，`useModel` 上还有一个 `data` 属性，用于一次性地读取 model 的数据，当你想只取值而不订阅更新时，或是试图在非 React 组件的环境中获取 model 时，它会变得非常有用。
-
-### withModel
-
-```typescript
-declare function withModel(
-  useModel,
-  mapModelToProps: (model, ownProps) => object
-): (C: ComponentType) => ComponentType;
-type ModelMap = {
-  [key: string]: unknown;
-};
-```
-
-`withModel` 用来在类组件中使用 model ，它的用法类似于 react-redux 中的 `connect` 。
-
-第一个参数 `useModel` 用来描述需要获取哪些 model ，可以只传入一个 `useModel` ，也可以以数组的形式传入多个。
-
-第二个参数 `mapModelToProps` 用来定义 model 到组件 `props` 的映射规则。
 
 示例：
 
 ```js
-// 订阅单个 model
-export default withStore(useCounterModel, counter => ({
+// 订阅单个 store
+export default withStore(useCounterStore, counter => ({
   count: counter.count
-}))(App);
+}))(App)
 
-// 订阅多个 model
+// 订阅多个 store
 export default withStore(
-  [useCounterModel, useTimerModel],
+  [useCounterStore, useTimerStore],
   ([counter, timer]) => ({
     count: counter.count,
     timer
   })
-)(App);
+)(App)
 ```
+
+### 性能优化
+
+`createStore` 或 `createGlobalStore` 的返回值 `useXxxStore` 支持传入一个 `depsFn` 函数，来精确控制订阅的字段：
+
+```jsx
+const counter = useCounterStore(store => [store.count, store.x.y])
+```
+
+这和 `useMemo` 、 `useEffect` 的 `deps` 非常相似，但是， `useStore` 的 `depsFn` 参数是一个**函数**。
+
+此外，我们建议对一个庞大的 store 进行拆分，这样不仅代码更易于维护，性能也会有所改善。
