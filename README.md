@@ -9,3 +9,5 @@ English | [简体中文](./README-cn.md)
 ![React](https://img.shields.io/npm/dependency-version/hox/peer/react?logo=react)
 
 See README-cn.md
+
+This is the documentation for hox v2. If you are looking for the v1 doc, please go [here](https://github.com/umijs/hox/blob/v1/README.md).
