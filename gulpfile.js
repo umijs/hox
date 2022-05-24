@@ -3,6 +3,7 @@ const del = require('del')
 const rollupConfig = require('./rollup.config')
 const rollup = require('rollup')
 const ts = require('gulp-typescript')
+const through = require('through2')
 const tsconfig = require('./tsconfig.json')
 
 gulp.task('clean-lib', function (callback) {
@@ -11,9 +12,7 @@ gulp.task('clean-lib', function (callback) {
 })
 
 gulp.task('copy-files', function () {
-  return gulp
-    .src(['package.json', 'README.md', 'LICENSE'])
-    .pipe(gulp.dest('lib/'))
+  return gulp.src(['README.md', 'LICENSE']).pipe(gulp.dest('lib/'))
 })
 
 gulp.task('ts-es', function () {
@@ -27,6 +26,27 @@ gulp.task('ts-es', function () {
     })
     .pipe(tsProject)
     .pipe(gulp.dest('lib/es/'))
+})
+
+gulp.task('generate-package-json', function () {
+  return gulp
+    .src('./package.json')
+    .pipe(
+      through.obj((file, enc, cb) => {
+        const rawJSON = file.contents.toString()
+        const parsed = JSON.parse(rawJSON)
+        delete parsed.scripts
+        delete parsed.devDependencies
+        delete parsed.publishConfig
+        delete parsed.files
+        delete parsed.resolutions
+        delete parsed.packageManager
+        const stringified = JSON.stringify(parsed, null, 2)
+        file.contents = Buffer.from(stringified)
+        cb(null, file)
+      })
+    )
+    .pipe(gulp.dest('./lib/'))
 })
 
 gulp.task('ts-cjs', function () {
@@ -49,5 +69,12 @@ gulp.task('rollup', async function () {
 
 gulp.task(
   'build',
-  gulp.series('clean-lib', 'copy-files', 'ts-es', 'ts-cjs', 'rollup')
+  gulp.series(
+    'clean-lib',
+    'copy-files',
+    'generate-package-json',
+    'ts-es',
+    'ts-cjs',
+    'rollup'
+  )
 )
