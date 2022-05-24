@@ -3,15 +3,10 @@ import { registerGlobalContainer } from './hox-root'
 import { useDataFromContainer } from './use-data-from-container'
 import { DepsFn } from './types'
 
-export interface UseGlobalStore<T> {
-  (depsFn?: DepsFn<T>): T
-  data?: T
-}
-
 export function createGlobalStore<T>(hook: () => T) {
   const container = new Container(hook)
   registerGlobalContainer(container)
-  const useGlobalStore: UseGlobalStore<T> = (depsFn?: DepsFn<T>) => {
+  function useGlobalStore(depsFn?: DepsFn<T>): T {
     if (!container.initialized) {
       console.error(
         'Failed to retrieve data from global container. Please make sure you have rendered HoxRoot.'
@@ -19,10 +14,8 @@ export function createGlobalStore<T>(hook: () => T) {
     }
     return useDataFromContainer(container, depsFn)
   }
-  Object.defineProperty(useGlobalStore, 'data', {
-    get: function () {
-      return container.data
-    },
-  })
-  return useGlobalStore
+  function getGlobalStore(): T | undefined {
+    return container.data
+  }
+  return [useGlobalStore, getGlobalStore] as const
 }

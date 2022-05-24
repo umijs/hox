@@ -189,34 +189,37 @@ export const [useTaskStore, TaskStoreProvider] = createStore(() => {
 ```js
 import { createGlobalStore } from 'hox'
 
-const useAccount = createGlobalStore(() => {
+const [useAccountStore, getAccountStore] = createGlobalStore(() => {
   // ...
 })
 ```
 
-需要留意，`createGlobalStore` 返回的并不是一个数组，而是用来订阅 store 的 Hook 函数，关于它的用法，这里就不再介绍了，和普通 store 是一样的。
+和 `createStore` 类似，`createGlobalStore` 返回了一个数组：
 
-可以发现，对于全局 store，并没有对应的 StoreProvider 组件，因此你不需要每次创建一个 store，就手动添加一层 Provider。不过，为了让全局 store 能够正常注册，你需要在整个 React
-应用的最外层用 `HoxRoot` 包裹一下：
+第一个元素是用来订阅 store 的 Hook 函数，关于它的用法，这里就不再介绍了，和普通 store 是一样的。
+
+而第二个元素有些区别，是一个静态获取函数 `getXxxStore`，这里先卖个关子，下面再具体介绍。
+
+可以发现，对于全局 store，并没有对应的 StoreProvider 组件，因此你不需要每次创建一个 store，就手动添加一层 Provider。不过，为了让全局 store 能够正常注册，你需要在整个 React 应用的最外层用 `HoxRoot` 包裹一下：
 
 ```jsx
 import { HoxRoot } from 'hox'
 
-;<HoxRoot>
-  <App />
-</HoxRoot>
+ReactDOM.render(
+  <HoxRoot>
+    <App />
+  </HoxRoot>,
+  domContainer
+)
 ```
 
 你可以把 `HoxRoot` 想象成所有全局 store 的统一的 StoreProvider，可以通过它一次性地把所有全局 store 都注册掉。
 
-全局 store 还有另一个非常方便的特性：`data` 属性。
-
-`createGlobalStore` 返回的 Hook 函数上有一个特殊的 `data` 属性，你可以通过它读取到 store 当前最新的值。当你在 React 组件外想使用 store 中的数据，或者是想调用 store
-提供的某个方法时，可以直接读取 `data` 属性。
+回到刚刚提到的 `getXxxStore` 函数，它的作用是一次性地读取 store 当前最新的值，而不会触发持续的订阅，因为它不是 Hook，所以并不需要一定在 React 组件渲染函数中调用，你可以在任何地方、任何时候调用它：
 
 ```js
 export function log(message) {
-  const { user } = useAccountStore.data
+  const { user } = getAccountStore()
   report.requestApi({
     message,
     userId: user.id,

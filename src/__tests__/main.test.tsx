@@ -54,7 +54,7 @@ test('createGlobalStore with arg', function () {
     return { count, decrement, increment }
   }
 
-  const useCounterModel = createGlobalStore(() => useCounter(5))
+  const [useCounterModel] = createGlobalStore(() => useCounter(5))
 
   const App: FC = () => {
     const counter = useCounterModel()
@@ -109,7 +109,7 @@ test('call createGlobalStore after HoxRoot get mounted', function () {
 
   expect(asFragment()).toMatchSnapshot()
 
-  const useCounterModel = createGlobalStore(useCounter)
+  const [useCounterModel] = createGlobalStore(useCounter)
   const App: FC = () => {
     const counter = useCounterModel()
     return (
@@ -135,7 +135,7 @@ test('withStore', function () {
     return { count, decrement, increment }
   }
 
-  const useCounterStore = createGlobalStore(useCounter)
+  const [useCounterStore] = createGlobalStore(useCounter)
   type Counter = ReturnType<typeof useCounterStore>
 
   interface Props {
@@ -175,13 +175,13 @@ test('setState timing', async function () {
     return { count, change }
   }
 
-  const useCounterModel = createGlobalStore(useCounter)
+  const [useCounterModel, getCounterStore] = createGlobalStore(useCounter)
 
   const App: FC = () => {
     const counter = useCounterModel()
     useEffect(() => {
       act(() => {
-        useCounterModel.data?.change()
+        getCounterStore()?.change()
       })
     }, [])
     return (
@@ -217,16 +217,16 @@ test('async state update', async function () {
     return { count, increment }
   }
 
-  const useCounterModel = createGlobalStore(useCounter)
+  const [useCounterStore, getCounterStore] = createGlobalStore(useCounter)
 
   const App: FC = () => {
-    const counter = useCounterModel()
+    const counter = useCounterStore()
 
     return (
       <div>
         <button onClick={counter.increment}>Change</button>
         <p>{counter.count}</p>
-        <p>{useCounterModel.data?.count}</p>
+        <p>{getCounterStore()?.count}</p>
       </div>
     )
   }
@@ -290,7 +290,7 @@ test('depsFn', function () {
   }
   const fn1 = jest.fn()
   const fn2 = jest.fn()
-  const useCounterModel = createGlobalStore(useCounter)
+  const [useCounterModel] = createGlobalStore(useCounter)
 
   const App1: FC = () => {
     const counter = useCounterModel()
@@ -324,7 +324,7 @@ test('depsFn', function () {
 })
 
 test('depending', async () => {
-  const useCounterModel = createGlobalStore(function A() {
+  const [useCounterModel] = createGlobalStore(function A() {
     const [count, setCount] = useState(0)
     const increment = () => setCount(count + 1)
 
@@ -334,7 +334,7 @@ test('depending', async () => {
     }
   })
 
-  const useCounterModel2 = createGlobalStore(function B() {
+  const [useCounterModel2] = createGlobalStore(function B() {
     console.log('useCounterModel')
     const counterModel = useCounterModel()
     const [count, setCount] = useState(counterModel.count || 1)
@@ -372,7 +372,7 @@ test('depending', async () => {
 })
 
 test('parent child', async () => {
-  const useCounterModel = createGlobalStore(function A() {
+  const [useCounterModel] = createGlobalStore(function A() {
     const [count, setCount] = useState(0)
     const increment = () => setCount(count + 1)
 
