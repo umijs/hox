@@ -32,8 +32,19 @@ exports[`async state update 2`] = `
 </DocumentFragment>
 `;
 
-exports[`create lazy model 1`] = `
+exports[`call createGlobalStore after HoxRoot get mounted 1`] = `
 <DocumentFragment>
+  <button>
+    Enable
+  </button>
+</DocumentFragment>
+`;
+
+exports[`call createGlobalStore after HoxRoot get mounted 2`] = `
+<DocumentFragment>
+  <button>
+    Enable
+  </button>
   <div>
     <button>
       Change
@@ -41,15 +52,15 @@ exports[`create lazy model 1`] = `
     <p>
       0
     </p>
-    <p>
-      0
-    </p>
   </div>
 </DocumentFragment>
 `;
 
-exports[`create lazy model 2`] = `
+exports[`call createGlobalStore after HoxRoot get mounted 3`] = `
 <DocumentFragment>
+  <button>
+    Enable
+  </button>
   <div>
     <button>
       Change
@@ -57,14 +68,11 @@ exports[`create lazy model 2`] = `
     <p>
       1
     </p>
-    <p>
-      1
-    </p>
   </div>
 </DocumentFragment>
 `;
 
-exports[`createModel with arg 1`] = `
+exports[`createGlobalStore with arg 1`] = `
 <DocumentFragment>
   <div>
     <button>
@@ -77,7 +85,7 @@ exports[`createModel with arg 1`] = `
 </DocumentFragment>
 `;
 
-exports[`createModel with arg 2`] = `
+exports[`createGlobalStore with arg 2`] = `
 <DocumentFragment>
   <div>
     <button>
@@ -130,12 +138,11 @@ exports[`setState timing 1`] = `
 exports[`simple 1`] = `
 <DocumentFragment>
   <div>
-    <button>
+    <button
+      data-testid="change-button"
+    >
       Change
     </button>
-    <p>
-      0
-    </p>
     <p>
       0
     </p>
@@ -146,12 +153,11 @@ exports[`simple 1`] = `
 exports[`simple 2`] = `
 <DocumentFragment>
   <div>
-    <button>
+    <button
+      data-testid="change-button"
+    >
       Change
     </button>
-    <p>
-      1
-    </p>
     <p>
       1
     </p>
@@ -159,7 +165,7 @@ exports[`simple 2`] = `
 </DocumentFragment>
 `;
 
-exports[`withModel 1`] = `
+exports[`withStore 1`] = `
 <DocumentFragment>
   <div>
     <button>
@@ -170,7 +176,7 @@ exports[`withModel 1`] = `
 </DocumentFragment>
 `;
 
-exports[`withModel 2`] = `
+exports[`withStore 2`] = `
 <DocumentFragment>
   <div>
     <button>

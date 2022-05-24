@@ -1,85 +1,145 @@
-import { createModel, withModel } from "..";
-import * as React from "react";
-import { Component, FC, useEffect, useState } from "react";
-import * as testing from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import { act } from "react-dom/test-utils";
-import { usePersistFn } from "ahooks";
-import { createLazyModel } from "../create-model";
+import { createGlobalStore, createStore, HoxRoot, withStore } from '..'
+import * as React from 'react'
+import { Component, FC, ReactElement, useEffect, useState } from 'react'
+import * as testing from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import { act } from 'react-dom/test-utils'
+import { useMemoizedFn } from 'ahooks'
 
 function sleep(duration: number) {
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     setTimeout(() => {
-      resolve();
-    }, duration);
-  });
+      resolve()
+    }, duration)
+  })
 }
 
-test("simple", function() {
+test('simple', function () {
   function useCounter() {
-    const [count, setCount] = useState(0);
-    const decrement = () => setCount(count - 1);
-    const increment = () => setCount(count + 1);
-    return { count, decrement, increment };
+    const [count, setCount] = useState(0)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
   }
 
-  const useCounterModel = createModel(useCounter);
+  const [useCounterStore, CounterStoreProvider] = createStore(useCounter)
 
   const App: FC = () => {
-    const counter = useCounterModel();
+    const counter = useCounterStore()
 
     return (
       <div>
-        <button onClick={counter.increment}>Change</button>
+        <button onClick={counter.increment} data-testid='change-button'>
+          Change
+        </button>
         <p>{counter.count}</p>
-        <p>{useCounterModel.data.count}</p>
       </div>
-    );
-  };
-  const renderer = testing.render(<App />);
-  expect(renderer.asFragment()).toMatchSnapshot();
-  testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+    )
+  }
+  const renderer = testing.render(
+    <CounterStoreProvider>
+      <App />
+    </CounterStoreProvider>
+  )
+  expect(renderer.asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(renderer.getByTestId('change-button'))
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
 
-test("createModel with arg", function() {
+test('createGlobalStore with arg', function () {
   function useCounter(initalValue: number) {
-    const [count, setCount] = useState(initalValue);
-    const decrement = () => setCount(count - 1);
-    const increment = () => setCount(count + 1);
-    return { count, decrement, increment };
+    const [count, setCount] = useState(initalValue)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
   }
 
-  const useCounterModel = createModel(useCounter, 5);
+  const [useCounterModel] = createGlobalStore(() => useCounter(5))
 
   const App: FC = () => {
-    const counter = useCounterModel();
+    const counter = useCounterModel()
     return (
       <div>
         <button onClick={counter.increment}>Change</button>
         <p>{counter.count}</p>
       </div>
-    );
-  };
-  const { getByText, asFragment } = testing.render(<App />);
-  expect(asFragment()).toMatchSnapshot();
-  testing.fireEvent.click(getByText("Change"));
-  expect(asFragment()).toMatchSnapshot();
-});
+    )
+  }
+  const { getByText, asFragment } = testing.render(
+    <HoxRoot>
+      <App />
+    </HoxRoot>
+  )
+  expect(asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(getByText('Change'))
+  expect(asFragment()).toMatchSnapshot()
+})
 
-test("withModel", function() {
+test('call createGlobalStore after HoxRoot get mounted', function () {
   function useCounter() {
-    const [count, setCount] = useState(0);
-    const decrement = () => setCount(count - 1);
-    const increment = () => setCount(count + 1);
-    return { count, decrement, increment };
+    const [count, setCount] = useState(0)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
   }
 
-  const useCounterModel = createModel(useCounter);
-  type Counter = ReturnType<typeof useCounterModel>;
+  let appElement: ReactElement
+
+  const AppWrapper: FC = props => {
+    const [enable, setEnable] = useState(false)
+    return (
+      <>
+        <button
+          onClick={() => {
+            setEnable(true)
+          }}
+        >
+          Enable
+        </button>
+        {enable && appElement}
+      </>
+    )
+  }
+
+  const { getByText, asFragment } = testing.render(
+    <HoxRoot>
+      <AppWrapper />
+    </HoxRoot>
+  )
+
+  expect(asFragment()).toMatchSnapshot()
+
+  const [useCounterModel] = createGlobalStore(useCounter)
+  const App: FC = () => {
+    const counter = useCounterModel()
+    return (
+      <div>
+        <button onClick={counter.increment}>Change</button>
+        <p>{counter.count}</p>
+      </div>
+    )
+  }
+  appElement = <App />
+
+  testing.fireEvent.click(getByText('Enable'))
+  expect(asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(getByText('Change'))
+  expect(asFragment()).toMatchSnapshot()
+})
+
+test('withStore', function () {
+  function useCounter() {
+    const [count, setCount] = useState(0)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
+  }
+
+  const [useCounterStore] = createGlobalStore(useCounter)
+  type Counter = ReturnType<typeof useCounterStore>
 
   interface Props {
-    counter: Counter;
+    counter: Counter
   }
 
   class App extends Component<Props> {
@@ -89,233 +149,261 @@ test("withModel", function() {
           <button onClick={this.props.counter.increment}>Change</button>
           {this.props.counter.count}
         </div>
-      );
+      )
     }
   }
 
-  const AppWithModel = withModel(useCounterModel, (counter: Counter) => ({
-    counter
-  }))(App);
-  const renderer = testing.render(<AppWithModel />);
-  expect(renderer.asFragment()).toMatchSnapshot();
-  testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+  const AppWithStore = withStore(useCounterStore, (counter: Counter) => ({
+    counter,
+  }))(App)
+  const renderer = testing.render(
+    <HoxRoot>
+      <AppWithStore />
+    </HoxRoot>
+  )
+  expect(renderer.asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
 
-test("setState timing", async function() {
+test('setState timing', async function () {
   function useCounter() {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(0)
     function change() {
-      setCount(1);
+      setCount(1)
     }
-    return { count, change };
+    return { count, change }
   }
 
-  const useCounterModel = createModel(useCounter);
+  const [useCounterModel, getCounterStore] = createGlobalStore(useCounter)
 
   const App: FC = () => {
-    const counter = useCounterModel();
+    const counter = useCounterModel()
     useEffect(() => {
       act(() => {
-        useCounterModel.data.change();
-      });
-    }, []);
+        getCounterStore()?.change()
+      })
+    }, [])
     return (
       <div>
         <p>{counter.count}</p>
       </div>
-    );
-  };
+    )
+  }
 
-  const renderer = testing.render(<App />);
+  const renderer = testing.render(
+    <HoxRoot>
+      <App />
+    </HoxRoot>
+  )
 
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
 
-test("async state update", async function() {
+test('async state update', async function () {
   function useCounter() {
-    const [count, setCount] = useState(0);
-    const increment = () => setCount(count + 1);
-    const asyncUpdate = usePersistFn(() => {
+    const [count, setCount] = useState(0)
+    const increment = () => setCount(count + 1)
+    const asyncUpdate = useMemoizedFn(() => {
       sleep(100).then(() => {
-        setCount(2);
-      });
-    });
+        setCount(2)
+      })
+    })
     useEffect(() => {
       if (count === 1) {
-        asyncUpdate();
+        asyncUpdate()
       }
-    }, [count]);
-    return { count, increment };
+    }, [count])
+    return { count, increment }
   }
 
-  const useCounterModel = createModel(useCounter);
+  const [useCounterStore, getCounterStore] = createGlobalStore(useCounter)
 
   const App: FC = () => {
-    const counter = useCounterModel();
+    const counter = useCounterStore()
 
     return (
       <div>
         <button onClick={counter.increment}>Change</button>
         <p>{counter.count}</p>
-        <p>{useCounterModel.data.count}</p>
+        <p>{getCounterStore()?.count}</p>
       </div>
-    );
-  };
-  const renderer = testing.render(<App />);
-  expect(renderer.asFragment()).toMatchSnapshot();
+    )
+  }
+  const renderer = testing.render(
+    <HoxRoot>
+      <App />
+    </HoxRoot>
+  )
+  expect(renderer.asFragment()).toMatchSnapshot()
   await act(async () => {
-    testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
-    await sleep(150);
-  });
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+    testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
+  })
+  await sleep(200)
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
 
-test("create lazy model", async function() {
-  function useCounter() {
-    const [count, setCount] = useState(0);
-    const decrement = () => setCount(count - 1);
-    const increment = () => setCount(count + 1);
-    return { count, decrement, increment };
-  }
+// test('create lazy model', async function () {
+//   function useCounter() {
+//     const [count, setCount] = useState(0)
+//     const decrement = () => setCount(count - 1)
+//     const increment = () => setCount(count + 1)
+//     return { count, decrement, increment }
+//   }
+//
+//   const useCounterModel = createLazyModel(useCounter)
+//
+//   const App: FC = () => {
+//     const counter = useCounterModel()
+//
+//     return (
+//       <div>
+//         <button onClick={counter.increment}>Change</button>
+//         <p>{counter.count}</p>
+//         <p>{useCounterModel.data.count}</p>
+//       </div>
+//     )
+//   }
+//   expect(useCounterModel.data).toBeUndefined()
+//   const renderer = testing.render(<HoxRoot><App /></HoxRoot>)
+//   expect(useCounterModel.data).toBeDefined()
+//   expect(renderer.asFragment()).toMatchSnapshot()
+//   act(() => {
+//     testing.fireEvent.click(testing.getByText(renderer.container, 'Change'))
+//   })
+//   expect(renderer.asFragment()).toMatchSnapshot()
+// })
 
-  const useCounterModel = createLazyModel(useCounter);
-
-  const App: FC = () => {
-    const counter = useCounterModel();
-
-    return (
-      <div>
-        <button onClick={counter.increment}>Change</button>
-        <p>{counter.count}</p>
-        <p>{useCounterModel.data.count}</p>
-      </div>
-    );
-  };
-  expect(useCounterModel.data).toBeUndefined();
-  const renderer = testing.render(<App />);
-  expect(useCounterModel.data).toBeDefined();
-  expect(renderer.asFragment()).toMatchSnapshot();
-  act(() => {
-    testing.fireEvent.click(testing.getByText(renderer.container, "Change"));
-  });
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
-
-test("depsFn", function() {
+test('depsFn', function () {
   function useCounter() {
     const [obj, setObj] = useState({
       a: 1,
-      b: 2
-    });
+      b: 2,
+    })
     const addA = () =>
       setObj({
         ...obj,
-        a: obj.a + 1
-      });
+        a: obj.a + 1,
+      })
 
-    return { obj, addA };
+    return { obj, addA }
   }
-  const fn1 = jest.fn();
-  const fn2 = jest.fn();
-  const useCounterModel = createModel(useCounter);
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+  const [useCounterModel] = createGlobalStore(useCounter)
 
   const App1: FC = () => {
-    const counter = useCounterModel();
-    fn1();
+    const counter = useCounterModel()
+    fn1()
 
-    return <button onClick={counter.addA}>Change</button>;
-  };
+    return <button onClick={counter.addA}>Change</button>
+  }
   const App2: FC = () => {
-    const counter = useCounterModel(data => [data.obj.b]);
-    fn2();
+    const counter = useCounterModel(data => [data.obj.b])
+    fn2()
 
-    return <button>{counter.obj.b}</button>;
-  };
+    return <button>{counter.obj.b}</button>
+  }
 
-  const { getByText } = testing.render(<App1 />);
-  testing.render(<App2 />);
-  expect(fn1).toBeCalledTimes(1);
-  expect(fn2).toBeCalledTimes(1);
+  const { getByText } = testing.render(
+    <HoxRoot>
+      <App1 />
+    </HoxRoot>
+  )
+  testing.render(
+    <HoxRoot>
+      <App2 />
+    </HoxRoot>
+  )
+  expect(fn1).toBeCalledTimes(1)
+  expect(fn2).toBeCalledTimes(1)
 
-  testing.fireEvent.click(getByText("Change"));
-  expect(fn1).toBeCalledTimes(2);
-  expect(fn2).toBeCalledTimes(1);
-});
+  testing.fireEvent.click(getByText('Change'))
+  expect(fn1).toBeCalledTimes(2)
+  expect(fn2).toBeCalledTimes(1)
+})
 
-test("depending", async () => {
-  const useCounterModel = createModel(function A() {
-    const [count, setCount] = useState(0);
-    const increment = () => setCount(count + 1);
-
-    return {
-      count,
-      increment
-    };
-  });
-
-  const useCounterModel2 = createModel(function B() {
-    console.log("useCounterModel");
-    const counterModel = useCounterModel();
-    const [count, setCount] = useState(counterModel.count || 1);
-    const increment = () => setCount(count + 1);
+test('depending', async () => {
+  const [useCounterModel] = createGlobalStore(function A() {
+    const [count, setCount] = useState(0)
+    const increment = () => setCount(count + 1)
 
     return {
       count,
-      increment
-    };
-  });
+      increment,
+    }
+  })
+
+  const [useCounterModel2] = createGlobalStore(function B() {
+    console.log('useCounterModel')
+    const counterModel = useCounterModel()
+    const [count, setCount] = useState(counterModel.count || 1)
+    const increment = () => setCount(count + 1)
+
+    return {
+      count,
+      increment,
+    }
+  })
 
   const App: FC = () => {
-    const counterModel = useCounterModel();
-    const counterModel2 = useCounterModel2();
+    const counterModel = useCounterModel()
+    const counterModel2 = useCounterModel2()
 
     return (
       <>
         {counterModel.count} | {counterModel2.count}
         <button onClick={counterModel.increment}>increment</button>
       </>
-    );
-  };
+    )
+  }
 
-  const renderer = testing.render(<App />);
-  expect(renderer.asFragment()).toMatchSnapshot();
+  const renderer = testing.render(
+    <HoxRoot>
+      <App />
+    </HoxRoot>
+  )
+  expect(renderer.asFragment()).toMatchSnapshot()
   act(() => {
-    testing.fireEvent.click(renderer.getByText("increment"));
-  });
-  await sleep(10);
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+    testing.fireEvent.click(renderer.getByText('increment'))
+  })
+  await sleep(10)
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
 
-test("parent child", async () => {
-  const useCounterModel = createModel(function A() {
-    const [count, setCount] = useState(0);
-    const increment = () => setCount(count + 1);
+test('parent child', async () => {
+  const [useCounterModel] = createGlobalStore(function A() {
+    const [count, setCount] = useState(0)
+    const increment = () => setCount(count + 1)
 
     return {
       count,
-      increment
-    };
-  });
+      increment,
+    }
+  })
 
   const Child: FC = () => {
-    const counter = useCounterModel();
+    const counter = useCounterModel()
     useEffect(() => {
-      counter.increment();
-    }, []);
-    return <div>{counter.count}</div>;
-  };
+      counter.increment()
+    }, [])
+    return <div>{counter.count}</div>
+  }
 
   const App: FC = () => {
-    const counterModel = useCounterModel();
+    const counterModel = useCounterModel()
     return (
       <>
         {counterModel.count}
         <Child />
       </>
-    );
-  };
+    )
+  }
 
-  const renderer = testing.render(<App />);
-  expect(renderer.asFragment()).toMatchSnapshot();
-});
+  const renderer = testing.render(
+    <HoxRoot>
+      <App />
+    </HoxRoot>
+  )
+  expect(renderer.asFragment()).toMatchSnapshot()
+})

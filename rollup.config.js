@@ -1,13 +1,13 @@
 module.exports = {
-  external: ["react"],
-  input: "lib/es/index.js",
+  external: ['react'],
+  input: 'lib/es/index.js',
   output: {
-    name: "hox",
+    name: 'hox',
     globals: {
-      react: "React",
-      "react-dom": "ReactDOM"
+      react: 'React',
+      'react-dom': 'ReactDOM',
     },
-    file: "lib/umd/hox.js",
-    format: "umd"
-  }
-};
+    file: 'lib/umd/hox.js',
+    format: 'umd',
+  },
+}
