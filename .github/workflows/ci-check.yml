@@ -8,19 +8,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup node and yarn
+      - name: Setup node and pnpm
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-          cache: 'yarn'
-      - name: Node version
+      - name: node version
         run: node -v
-      - name: Yarn version
-        run: yarn -v
-      - name: yarn install, test and build
+      - name: pnpm version
+        run: pnpm -v
+      - name: pnpm install, test and build
         run: |
-          yarn install
-          yarn run test
-          yarn run build
+          pnpm install
+          pnpm test
+          pnpm build
         env:
           CI: true
