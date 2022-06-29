@@ -1,19 +1,17 @@
-import React, { FC, PropsWithChildren } from 'react'
+import React, { ComponentType, FC, PropsWithChildren } from 'react'
 import { useSyncExternalStore } from 'use-sync-external-store/shim'
-import { Container } from './container'
-import { Executor } from './executor'
 
-let globalContainers: Container<any>[] = []
+let globalExecutors: ComponentType[] = []
 
 const listeners = new Set<() => void>()
 
-export function registerGlobalContainer(container: Container<any>) {
-  globalContainers = [...globalContainers, container]
+export function registerGlobalExecutor(executor: ComponentType) {
+  globalExecutors = [...globalExecutors, executor]
   listeners.forEach(listener => listener())
 }
 
 export const HoxRoot: FC<PropsWithChildren<{}>> = props => {
-  const containers = useSyncExternalStore(
+  const executors = useSyncExternalStore(
     onStoreChange => {
       listeners.add(onStoreChange)
       return () => {
@@ -21,25 +19,13 @@ export const HoxRoot: FC<PropsWithChildren<{}>> = props => {
       }
     },
     () => {
-      return globalContainers
+      return globalExecutors
     }
   )
   return (
     <>
-      {/* TODO: memoize Executors */}
-      {containers.map((container, index) => (
-        <Executor
-          key={index}
-          hook={container.hook}
-          onUpdate={val => {
-            container.data = val
-            container.notify()
-          }}
-          onMount={val => {
-            container.data = val
-            container.initialized = true
-          }}
-        />
+      {executors.map((Executor, index) => (
+        <Executor key={index} />
       ))}
       {props.children}
     </>

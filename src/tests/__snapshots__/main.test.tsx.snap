@@ -72,6 +72,42 @@ exports[`call createGlobalStore after HoxRoot get mounted 3`] = `
 </DocumentFragment>
 `;
 
+exports[`children should not have redundant renders 1`] = `
+<DocumentFragment>
+  <button
+    data-testid="parent-button"
+  />
+  <div>
+    <button
+      data-testid="change-button"
+    >
+      Change
+    </button>
+    <p>
+      0
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`children should not have redundant renders 2`] = `
+<DocumentFragment>
+  <button
+    data-testid="parent-button"
+  />
+  <div>
+    <button
+      data-testid="change-button"
+    >
+      Change
+    </button>
+    <p>
+      1
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`createGlobalStore with arg 1`] = `
 <DocumentFragment>
   <div>

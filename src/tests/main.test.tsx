@@ -46,6 +46,54 @@ test('simple', function () {
   expect(renderer.asFragment()).toMatchSnapshot()
 })
 
+test('children should not have redundant renders', function () {
+  function useCounter() {
+    const [count, setCount] = useState(0)
+    const decrement = () => setCount(count - 1)
+    const increment = () => setCount(count + 1)
+    return { count, decrement, increment }
+  }
+
+  const [useCounterStore, CounterStoreProvider] = createStore(useCounter)
+
+  const childRender = jest.fn()
+
+  const Child: FC = () => {
+    const counter = useCounterStore()
+    childRender()
+    return (
+      <div>
+        <button onClick={counter.increment} data-testid='change-button'>
+          Change
+        </button>
+        <p>{counter.count}</p>
+      </div>
+    )
+  }
+
+  const App: FC = () => {
+    const [flag, setFlag] = useState({})
+    return (
+      <CounterStoreProvider>
+        <button
+          onClick={() => {
+            setFlag({})
+          }}
+          data-testid='parent-button'
+        />
+        <Child />
+      </CounterStoreProvider>
+    )
+  }
+  const renderer = testing.render(<App />)
+  expect(renderer.asFragment()).toMatchSnapshot()
+  expect(childRender).toHaveBeenCalledTimes(1)
+  testing.fireEvent.click(renderer.getByTestId('parent-button'))
+  expect(childRender).toHaveBeenCalledTimes(2)
+  testing.fireEvent.click(renderer.getByTestId('change-button'))
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
+
 test('createGlobalStore with arg', function () {
   function useCounter(initalValue: number) {
     const [count, setCount] = useState(initalValue)
@@ -169,9 +217,11 @@ test('withStore', function () {
 test('setState timing', async function () {
   function useCounter() {
     const [count, setCount] = useState(0)
+
     function change() {
       setCount(1)
     }
+
     return { count, change }
   }
 
@@ -180,9 +230,7 @@ test('setState timing', async function () {
   const App: FC = () => {
     const counter = useCounterModel()
     useEffect(() => {
-      act(() => {
-        getCounterStore()?.change()
-      })
+      getCounterStore()?.change()
     }, [])
     return (
       <div>
@@ -288,6 +336,7 @@ test('depsFn', function () {
 
     return { obj, addA }
   }
+
   const fn1 = jest.fn()
   const fn2 = jest.fn()
   const [useCounterModel] = createGlobalStore(useCounter)
@@ -335,7 +384,6 @@ test('depending', async () => {
   })
 
   const [useCounterModel2] = createGlobalStore(function B() {
-    console.log('useCounterModel')
     const counterModel = useCounterModel()
     const [count, setCount] = useState(counterModel.count || 1)
     const increment = () => setCount(count + 1)

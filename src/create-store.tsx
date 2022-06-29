@@ -2,11 +2,12 @@ import React, {
   createContext,
   FC,
   memo,
+  PropsWithChildren,
   ReactNode,
   useContext,
+  useEffect,
   useState,
 } from 'react'
-import { Executor } from './executor'
 import { Container } from './container'
 import { DepsFn } from './types'
 import { useDataFromContainer } from './use-data-from-container'
@@ -25,26 +26,45 @@ export function createStore<T>(hook: () => T, options?: CreateStoreOptions) {
   const shouldMemo = options?.memo ?? true
   // TODO: forwardRef
   const StoreContext = createContext<Container<T>>(fallbackContainer)
-  const StoreProvider: FC<StoreProviderProps> = props => {
-    const [container] = useState(() => new Container<T>(hook))
+
+  const IsolatorContext = createContext({})
+
+  const IsolatorOuter: FC<PropsWithChildren<{}>> = props => {
     return (
-      <>
-        <Executor
-          hook={hook}
-          onUpdate={val => {
-            container.data = val
-            container.notify()
-          }}
-          onMount={val => {
-            container.data = val
-            container.initialized = true
-          }}
-        />
-        {/* TODO: If React can't guarantee the render order, we need to use Checker. Or maybe use Suspense? */}
-        <StoreContext.Provider value={container}>
-          {props.children}
-        </StoreContext.Provider>
-      </>
+      <IsolatorContext.Provider value={{}}>
+        {props.children}
+      </IsolatorContext.Provider>
+    )
+  }
+
+  const IsolatorInner = memo<PropsWithChildren<{}>>(
+    props => {
+      useContext(IsolatorContext)
+      return <>{props.children}</>
+    },
+    () => true
+  )
+
+  const StoreExecutor = memo<PropsWithChildren<{}>>(props => {
+    const [container] = useState(() => new Container<T>(hook))
+    container.data = hook()
+    useEffect(() => {
+      container.notify()
+    })
+    return (
+      <StoreContext.Provider value={container}>
+        {props.children}
+      </StoreContext.Provider>
+    )
+  })
+
+  const StoreProvider: FC<StoreProviderProps> = props => {
+    return (
+      <IsolatorOuter>
+        <StoreExecutor>
+          <IsolatorInner>{props.children}</IsolatorInner>
+        </StoreExecutor>
+      </IsolatorOuter>
     )
   }
 
