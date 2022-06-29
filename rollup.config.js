@@ -1,3 +1,6 @@
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const commonjs = require('@rollup/plugin-commonjs')
+
 module.exports = {
   external: ['react'],
   input: 'lib/es/index.js',
@@ -9,4 +12,5 @@ module.exports = {
     file: 'lib/umd/hox.js',
     format: 'umd',
   },
+  plugins: [nodeResolve(), commonjs()],
 }
