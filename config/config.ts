@@ -51,7 +51,7 @@ const config: IConfig = {
     },
     {
       name: 'description',
-      content: 'Sharing states between React components.',
+      content: 'Sharing states among React components.',
     },
   ],
   hash: true,
