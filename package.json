@@ -4,10 +4,8 @@
   "description": "React store with hooks.",
   "license": "MIT",
   "private": false,
-  "peerDependencies": {
-    "react": ">=16.8.0"
-  },
   "scripts": {
+    "start": "dumi dev",
     "build": "gulp build",
     "test": "jest",
     "lint": "tslint -p tsconfig.json",
@@ -23,6 +21,12 @@
   "typings": "./es/index.d.ts",
   "unpkg": "./umd/antd-mobile.js",
   "GravityCDN": "./umd/antd-mobile.js",
+  "dependencies": {
+    "use-sync-external-store": "^1.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
@@ -38,6 +42,7 @@
     "@types/use-sync-external-store": "^0.0.3",
     "ahooks": "^3.3.10",
     "del": "^6.0.0",
+    "dumi": "^1.1.43",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
     "husky": "^8.0.1",
@@ -53,9 +58,6 @@
     "ts-jest": "^28.0.2",
     "tslint": "^6.1.3",
     "typescript": "~4.5.0"
-  },
-  "dependencies": {
-    "use-sync-external-store": "^1.1.0"
   },
   "resolutions": {
     "@types/react": "18",

@@ -60,3 +60,8 @@ typings/
 
 # next.js build output
 .next
+
+# dumi
+/assets.json
+.umi/
+.umi-production/
