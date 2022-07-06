@@ -11,6 +11,7 @@
     "lint": "tslint -p tsconfig.json",
     "umd": "rollup --config rollup.config.js",
     "postinstall": "husky install",
+    "build-doc": "dumi build",
     "publish": "npm publish ./lib --registry=https://registry.npmjs.org",
     "publish:alpha": "npm publish ./lib --registry=https://registry.npmjs.org --tag alpha",
     "publish:dev": "npm publish ./lib --registry=https://registry.npmjs.org --tag dev"
