@@ -3,9 +3,6 @@ import { IConfig } from 'dumi'
 const config: IConfig = {
   mode: 'site',
   title: 'Hox',
-  history: {
-    type: 'hash',
-  },
   navs: {
     'en': [
       {
@@ -59,7 +56,9 @@ const config: IConfig = {
     ['en', 'English'],
     ['zh', '中文'],
   ],
-  // exportStatic: {},
+  base: '/hox',
+  publicPath: '/hox/',
+  exportStatic: {},
   // dynamicImport: {},
 }
 
