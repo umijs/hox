@@ -33,8 +33,31 @@ const config: IConfig = {
       },
     ],
   },
+  menus: {
+    '/guide': [
+      {
+        title: 'Quick Start',
+        path: '/guide/quick-start',
+      },
+    ],
+    '/zh/guide': [
+      {
+        title: '快速上手',
+        path: '/guide/quick-start',
+      },
+      {
+        title: '性能优化',
+        path: '/guide/performance',
+      },
+      {
+        title: '在类组件中使用',
+        path: '/guide/use-in-class-components',
+      },
+    ],
+  },
   resolve: {
     includes: ['docs'],
+    passivePreview: true,
   },
   metas: [
     {
@@ -48,7 +71,7 @@ const config: IConfig = {
     },
     {
       name: 'description',
-      content: 'Sharing states among React components.',
+      content: 'State sharing for React components.',
     },
   ],
   hash: true,

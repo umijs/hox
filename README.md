@@ -1,6 +1,6 @@
 # Hox
 
-> Sharing states among React components.
+> State sharing for React components.
 
 [![npm version](https://img.shields.io/npm/v/hox.svg?logo=npm)](https://www.npmjs.com/package/hox)
 [![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/hox.svg?logo=javascript)](https://www.npmjs.com/package/hox)

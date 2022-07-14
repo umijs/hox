@@ -2,7 +2,7 @@
 title: Hox
 hero:
   title: Hox
-  desc: Sharing states among React components.
+  desc: State sharing for React components.
 ---
 
 [![npm version](https://img.shields.io/npm/v/hox.svg?logo=npm)](https://www.npmjs.com/package/hox)
