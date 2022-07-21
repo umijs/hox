@@ -39,6 +39,14 @@ const config: IConfig = {
         title: 'Quick Start',
         path: '/guide/quick-start',
       },
+      {
+        title: 'Performance',
+        path: '/guide/performance',
+      },
+      {
+        title: 'Use in Class Components',
+        path: '/guide/use-in-class-components',
+      },
     ],
     '/zh/guide': [
       {

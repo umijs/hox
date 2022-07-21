@@ -18,9 +18,3 @@ npm add hox
 ## 在线体验
 
 [![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/todo-app-with-hox-2gvgg)
-
-## 安装
-
-```bash
-npm add hox
-```

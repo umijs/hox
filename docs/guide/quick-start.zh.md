@@ -1,7 +1,5 @@
 # 快速上手
 
-<code src="../demos/demo1.tsx"></code>
-
 ## 创建一个 store
 
 在 hox 中，任意的 custom Hook，经过 `createStore` 包装后，就变成了持久化，可以在组件间进行共享的状态。
@@ -69,8 +67,7 @@ function TaskList() {
 
 ## store 的上下文和多个实例
 
-需要注意的是，只有 `CounterStoreProvider` 的内部节点才可以获取到它的上下文，所以在 `Header` 组件中是不可以调用 `useTaskStore` 的。如果你熟悉 React 的 Context
-特性，那么这一点是很好理解的。
+需要注意的是，只有 `CounterStoreProvider` 的内部节点才可以获取到它的上下文，所以在 `Header` 组件中是不可以调用 `useTaskStore` 的。如果你熟悉 React 的 Context 特性，那么这一点是很好理解的。
 
 ```jsx
 <App>
@@ -81,8 +78,7 @@ function TaskList() {
 </App>
 ```
 
-每渲染一个 `TaskStoreProvider`，就会对应的创建一个 store 的实例，基于这个特性，你可以在页面上渲染多个 StoreProvider，来实现多实例，并且根据 Context 的上下文，在子节点组件中自动地获取到对应的
-store 实例：
+每渲染一个 `TaskStoreProvider`，就会对应的创建一个 store 的实例，基于这个特性，你可以在页面上渲染多个 StoreProvider，来实现多实例，并且根据 Context 的上下文，在子节点组件中自动地获取到对应的 store 实例：
 
 ```jsx
 <TaskStoreProvider>
@@ -99,7 +95,7 @@ store 实例：
 
 不同 StoreProvider 实例之间，数据是完全独立和隔离的，就像是同一个 React 组件的多个实例一样。
 
-你甚至可以在 `TaskStoreProvider` 子节点中再渲染一个 `TaskStoreProvider`，根据 Context 的特性，`TaskList` 组件会自动寻找到最近的父级 Prodiver：
+你甚至可以在 `TaskStoreProvider` 子节点中再渲染一个 `TaskStoreProvider`，根据 Context 的特性，`TaskList` 组件会自动寻找到最近的父级 Provider：
 
 ```jsx
 <TaskStoreProvider>
@@ -114,8 +110,7 @@ store 实例：
 
 ## store 之间的依赖
 
-虽然你仍然可以按照传统的单一数据源的思想进行 store 的设计，但我们更推荐将 store 拆分成多个小部分，于是不可避免的，我们需要在多个 store 之间处理依赖关系，例如任务列表模块 `task` 依赖账户模块 `account`
-。
+虽然你仍然可以按照传统的单一数据源的思想进行 store 的设计，但我们更推荐将 store 拆分成多个小部分，于是不可避免的，我们需要在多个 store 之间处理依赖关系，例如任务列表模块 `task` 依赖账户模块 `account`。
 
 在 hox 中，处理模块之间的依赖非常简单且自然：在一个 store 中可以直接使用 `useXXXStore` 来获取另一个 store，并订阅其更新，和在组件中使用并无两样。
 
