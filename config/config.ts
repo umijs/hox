@@ -81,6 +81,10 @@ const config: IConfig = {
       name: 'description',
       content: 'State sharing for React components.',
     },
+    {
+      name: 'google-site-verification',
+      content: '283Gpan2mySpkvW36ciOJaQryX3dH7C0Hr3sRM5L_hM',
+    },
   ],
   hash: true,
   locales: [
