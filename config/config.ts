@@ -87,8 +87,6 @@ const config: IConfig = {
     ['en', 'English'],
     ['zh', '中文'],
   ],
-  base: '/hox',
-  publicPath: '/hox/',
   exportStatic: {},
   // dynamicImport: {},
 }
