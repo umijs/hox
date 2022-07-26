@@ -47,6 +47,10 @@ const config: IConfig = {
         title: 'Use in Class Components',
         path: '/guide/use-in-class-components',
       },
+      {
+        title: 'Migrate from v1',
+        path: '/guide/how-to-migrate-from-v1-to-v2',
+      },
     ],
     '/zh/guide': [
       {
@@ -60,6 +64,10 @@ const config: IConfig = {
       {
         title: '在类组件中使用',
         path: '/guide/use-in-class-components',
+      },
+      {
+        title: '从 v1 迁移',
+        path: '/guide/how-to-migrate-from-v1-to-v2',
       },
     ],
   },
