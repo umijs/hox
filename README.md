@@ -17,7 +17,7 @@ State sharing for React components.
 ## Install
 
 ```shell
-npm add hox@2.0.0-alpha.2
+npm add hox@2.0.0-rc.0
 ```
 
 ## Why Hox?
