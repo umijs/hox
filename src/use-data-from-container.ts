@@ -3,8 +3,8 @@ import { Container } from './container'
 import { DepsFn } from './types'
 import { useSyncExternalStore } from 'use-sync-external-store/shim'
 
-export function useDataFromContainer<T>(
-  container: Container<T>,
+export function useDataFromContainer<T, P>(
+  container: Container<T, P>,
   depsFn?: DepsFn<T>
 ): T {
   const depsFnRef = useRef(depsFn)

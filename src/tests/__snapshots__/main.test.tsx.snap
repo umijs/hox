@@ -201,6 +201,32 @@ exports[`simple 2`] = `
 </DocumentFragment>
 `;
 
+exports[`with extra props passed in 1`] = `
+<DocumentFragment>
+  <button
+    data-testid="change-button"
+  >
+    Change
+  </button>
+  <p>
+    0
+  </p>
+</DocumentFragment>
+`;
+
+exports[`with extra props passed in 2`] = `
+<DocumentFragment>
+  <button
+    data-testid="change-button"
+  >
+    Change
+  </button>
+  <p>
+    1
+  </p>
+</DocumentFragment>
+`;
+
 exports[`withStore 1`] = `
 <DocumentFragment>
   <div>

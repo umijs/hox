@@ -455,3 +455,35 @@ test('parent child', async () => {
   )
   expect(renderer.asFragment()).toMatchSnapshot()
 })
+
+test('with extra props passed in', function () {
+  function useCounter(props: { count: number }) {
+    return { count: props.count }
+  }
+
+  const [useCounterStore, CounterStoreProvider] = createStore(useCounter)
+
+  const App: FC = () => {
+    const [count, setCount] = useState(0)
+    const increment = () => setCount(count + 1)
+
+    return (
+      <CounterStoreProvider count={count}>
+        <button onClick={increment} data-testid='change-button'>
+          Change
+        </button>
+        <Inner />
+      </CounterStoreProvider>
+    )
+  }
+
+  const Inner: FC = () => {
+    const counter = useCounterStore()
+    return <p>{counter.count}</p>
+  }
+
+  const renderer = testing.render(<App />)
+  expect(renderer.asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(renderer.getByTestId('change-button'))
+  expect(renderer.asFragment()).toMatchSnapshot()
+})
