@@ -137,6 +137,27 @@ export const [useTaskStore, TaskStoreProvider] = createStore(() => {
 })
 ```
 
+## Pass additional parameters to StoreProvider
+
+You can pass additional parameters to the StoreProvider through `props`, and then in the store's Hook, get it through the first parameter `props`, just like writing React components:
+
+```jsx
+<CounterStoreProvider initialCount={42}>{/* ... */}</CounterStoreProvider>
+```
+
+```jsx
+type Props = {
+  initialCount: number,
+}
+
+const [useCounterStore, CounterStoreProvider] = createStore(function (
+  props: Props
+) {
+  const [count, setCount] = useState(props.initialCount)
+  return { count, setCount }
+})
+```
+
 ## Global Store
 
 In fact, not all stores need to have a scope and need to support multiple instances. In a real project, most stores may be global, and if you manually add StoreProvider every time, you may feel collapse:
