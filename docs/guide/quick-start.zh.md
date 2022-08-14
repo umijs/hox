@@ -137,6 +137,27 @@ export const [useTaskStore, TaskStoreProvider] = createStore(() => {
 })
 ```
 
+## 传递额外的参数给 StoreProvider
+
+你可以通过 `props` 传递额外的参数给 StoreProvider，然后再 store 的 Hook 中，通过第一个参数 `props` 获取到，就像写 React 组件一样：
+
+```jsx
+<CounterStoreProvider initialCount={42}>{/* ... */}</CounterStoreProvider>
+```
+
+```jsx
+type Props = {
+  initialCount: number,
+}
+
+const [useCounterStore, CounterStoreProvider] = createStore(function (
+  props: Props
+) {
+  const [count, setCount] = useState(props.initialCount)
+  return { count, setCount }
+})
+```
+
 ## 全局 store
 
 其实并不是所有的 store 都需要有一个作用域、需要支持多个实例，在一个真实的项目中，大部分的 store 可能都是全局性的，而如果你每次都手动添加 StoreProvider，可能会感到崩溃：
