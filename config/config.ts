@@ -55,7 +55,7 @@ const config: IConfig = {
     '/zh/guide': [
       {
         title: '快速上手',
-        path: '/guide/quick-start',
+        path: '/zh/guide/quick-start',
       },
       {
         title: '性能优化',
