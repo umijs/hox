@@ -14,7 +14,11 @@ hero:
 ![React](https://img.shields.io/npm/dependency-version/hox/peer/react?logo=react)
 
 ```shell
-npm add hox@2.0.0-rc.0
+npm install --save hox
+# or
+yarn add hox
+# or
+pnpm add hox
 ```
 
 ## 在线体验
