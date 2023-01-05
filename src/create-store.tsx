@@ -39,8 +39,7 @@ export function createStore<T, P = {}>(
     props => {
       useContext(IsolatorContext)
       return <>{props.children}</>
-    },
-    () => true
+    }
   )
 
   const StoreExecutor = memo<PropsWithChildren<P>>(props => {
