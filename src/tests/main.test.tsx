@@ -487,3 +487,36 @@ test('with extra props passed in', function () {
   testing.fireEvent.click(renderer.getByTestId('change-button'))
   expect(renderer.asFragment()).toMatchSnapshot()
 })
+
+test('children should update', function () {
+  const [useEmptyStore, EmptyStoreProvider] = createStore(function (props: {}) {
+    return {}
+  })
+
+  const Child: FC<{ counter: number }> = props => {
+    return <div>{props.counter}</div>
+  }
+
+  const App: FC = () => {
+    const [counter, setCounter] = useState(0)
+    return (
+      <div>
+        <button
+          onClick={() => {
+            setCounter(counter + 1)
+          }}
+          data-testid='change-button'
+        >
+          Change
+        </button>
+        <EmptyStoreProvider>
+          <Child counter={counter} />
+        </EmptyStoreProvider>
+      </div>
+    )
+  }
+  const renderer = testing.render(<App />)
+  expect(renderer.asFragment()).toMatchSnapshot()
+  testing.fireEvent.click(renderer.getByTestId('change-button'))
+  expect(renderer.asFragment()).toMatchSnapshot()
+})

@@ -25,11 +25,21 @@ export function createStore<T, P = {}>(
   // TODO: forwardRef
   const StoreContext = createContext<Container<T, P>>(fallbackContainer)
 
-  const IsolatorContext = createContext({})
+  const IsolatorContext = createContext({
+    node: undefined as React.ReactNode,
+  })
 
-  const IsolatorOuter: FC<PropsWithChildren<{}>> = props => {
+  const IsolatorOuter: FC<
+    PropsWithChildren<{
+      node: React.ReactNode
+    }>
+  > = props => {
     return (
-      <IsolatorContext.Provider value={{}}>
+      <IsolatorContext.Provider
+        value={{
+          node: props.node,
+        }}
+      >
         {props.children}
       </IsolatorContext.Provider>
     )
@@ -37,8 +47,8 @@ export function createStore<T, P = {}>(
 
   const IsolatorInner = memo<PropsWithChildren<{}>>(
     props => {
-      useContext(IsolatorContext)
-      return <>{props.children}</>
+      const { node } = useContext(IsolatorContext)
+      return <>{node}</>
     },
     () => true
   )
@@ -59,9 +69,9 @@ export function createStore<T, P = {}>(
 
   const StoreProvider: FC<PropsWithChildren<P>> = props => {
     return (
-      <IsolatorOuter>
+      <IsolatorOuter node={props.children}>
         <StoreExecutor {...props}>
-          <IsolatorInner>{props.children}</IsolatorInner>
+          <IsolatorInner />
         </StoreExecutor>
       </IsolatorOuter>
     )
