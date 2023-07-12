@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "start": "dumi dev",
-    "build": "gulp build",
+    "build": "NODE_OPTIONS=--no-experimental-fetch gulp build",
     "test": "jest",
     "lint": "tslint -p tsconfig.json",
     "umd": "rollup --config rollup.config.js",
