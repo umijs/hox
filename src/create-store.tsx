@@ -17,7 +17,7 @@ export type CreateStoreOptions = {
 
 const fallbackContainer = new Container<any>(() => {})
 
-export function createStore<T, P = {}>(
+export function createStore<T, P extends {} = {}>(
   hook: (props: P) => T,
   options?: CreateStoreOptions
 ) {
