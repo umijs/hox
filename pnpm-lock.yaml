@@ -39,10 +39,10 @@ devDependencies:
     specifier: ^17.0.45
     version: 17.0.45
   '@types/react':
-    specifier: ^18.2.18
+    specifier: '18'
     version: 18.2.18
   '@types/react-dom':
-    specifier: ^18.2.7
+    specifier: '18'
     version: 18.2.7
   '@types/react-test-renderer':
     specifier: ^18.0.0
