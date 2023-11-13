@@ -2,7 +2,7 @@ import { createGlobalStore, createStore, HoxRoot, withStore } from '..'
 import * as React from 'react'
 import { Component, FC, ReactElement, useEffect, useState } from 'react'
 import * as testing from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom'
 import { act } from 'react-dom/test-utils'
 import { useMemoizedFn } from 'ahooks'
 
