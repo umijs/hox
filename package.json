@@ -10,11 +10,11 @@
     "test": "jest",
     "lint": "tslint -p tsconfig.json",
     "umd": "rollup --config rollup.config.js",
-    "postinstall": "husky install",
     "build-doc": "dumi build",
     "publish": "npm publish ./lib --registry=https://registry.npmjs.org",
     "publish:alpha": "npm publish ./lib --registry=https://registry.npmjs.org --tag alpha",
-    "publish:dev": "npm publish ./lib --registry=https://registry.npmjs.org --tag dev"
+    "publish:dev": "npm publish ./lib --registry=https://registry.npmjs.org --tag dev",
+    "prepare": "husky"
   },
   "main": "./cjs/index.js",
   "module": "./es/index.js",
@@ -46,7 +46,7 @@
     "dumi": "^1.1.54",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
-    "husky": "^8.0.3",
+    "husky": "^9.0.11",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^2.8.8",
