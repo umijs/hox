@@ -43,9 +43,9 @@ createGlobalStore(() => useCounter(5))
 在 v2 版本的 hox 中，需要通过 `HoxRoot` 组件来收集和执行全局 Store，因此你需要在整个应用的最外层包裹一个 `HoxRoot`：
 
 ```jsx
-<HotRoot>
+<HoxRoot>
   <App />
-</HotRoot>
+</HoxRoot>
 ```
 
 需要注意的是，在同一个浏览器页面上，**只能同时渲染一个 HoxRoot**。
