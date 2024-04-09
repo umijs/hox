@@ -10,7 +10,7 @@
     "test": "jest",
     "lint": "tslint -p tsconfig.json",
     "umd": "rollup --config rollup.config.js",
-    "build-doc": "dumi build",
+    "build-doc": "NODE_OPTIONS=--openssl-legacy-provider dumi build",
     "publish": "npm publish ./lib --registry=https://registry.npmjs.org",
     "publish:alpha": "npm publish ./lib --registry=https://registry.npmjs.org --tag alpha",
     "publish:dev": "npm publish ./lib --registry=https://registry.npmjs.org --tag dev",
