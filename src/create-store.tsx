@@ -1,10 +1,12 @@
 import React, {
   createContext,
   FC,
+  Fragment,
   memo,
   PropsWithChildren,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import { Container } from './container'
@@ -22,58 +24,26 @@ export function createStore<T, P extends {} = {}>(
   options?: CreateStoreOptions
 ) {
   const shouldMemo = options?.memo ?? true
-  // TODO: forwardRef
   const StoreContext = createContext<Container<T, P>>(fallbackContainer)
-
-  const IsolatorContext = createContext({
-    node: undefined as React.ReactNode,
-  })
-
-  const IsolatorOuter: FC<
-    PropsWithChildren<{
-      node: React.ReactNode
-    }>
-  > = props => {
-    return (
-      <IsolatorContext.Provider
-        value={{
-          node: props.node,
-        }}
-      >
-        {props.children}
-      </IsolatorContext.Provider>
-    )
-  }
-
-  const IsolatorInner = memo<PropsWithChildren<{}>>(
-    props => {
-      const { node } = useContext(IsolatorContext)
-      return <>{node}</>
-    },
-    () => true
-  )
-
-  const StoreExecutor = memo<PropsWithChildren<P>>(props => {
-    const { children, ...p } = props
-    const [container] = useState(() => new Container<T, P>(hook))
+  const StoreExecutor = memo<
+    PropsWithChildren<{ container: Container<T, P>; p: P }>
+  >(({ container, p }) => {
     container.data = hook(p as P)
     useEffect(() => {
       container.notify()
     })
-    return (
-      <StoreContext.Provider value={container}>
-        {props.children}
-      </StoreContext.Provider>
-    )
+    return null
   })
 
-  const StoreProvider: FC<PropsWithChildren<P>> = props => {
+  const StoreProvider: FC<PropsWithChildren<P>> = ({ children, ...p }) => {
+    const container = useRef(new Container<T, P>(hook))
     return (
-      <IsolatorOuter node={props.children}>
-        <StoreExecutor {...props}>
-          <IsolatorInner />
-        </StoreExecutor>
-      </IsolatorOuter>
+      <Fragment>
+        <StoreExecutor container={container.current} p={p as P} />
+        <StoreContext.Provider value={container.current}>
+          {children}
+        </StoreContext.Provider>
+      </Fragment>
     )
   }
 
