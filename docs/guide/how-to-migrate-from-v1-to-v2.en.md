@@ -43,9 +43,9 @@ createGlobalStore(() => useCounter(5))
 In the v2 version of hox, the global Store needs to be collected and executed through the `HoxRoot` component, so you need to wrap a `HoxRoot` in the outermost layer of the entire application:
 
 ```jsx
-<HotRoot>
+<HoxRoot>
   <App />
-</HotRoot>
+</HoxRoot>
 ```
 
 It should be noted that on the same browser page, only one HoxRoot can be rendered at the same time.
